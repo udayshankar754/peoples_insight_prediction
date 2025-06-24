@@ -56,7 +56,6 @@ export  class LiveResultComponent implements OnInit {
   public dataSource : any;
   dataSource_2 : any;
   selectedStateName : any;
-  selectedStateName_actual : any;
   data = new BehaviorSubject<any>(null);  
   
   
@@ -71,10 +70,10 @@ export  class LiveResultComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
 
-    // this.formData = this.fb.group({
-    //   state: ['', [Validators.required]],
-    //   electionType: ['', [Validators.required]],
-    // });
+    this.formData = this.fb.group({
+      state: ['DL', [Validators.required]],
+      electionType: ['', [Validators.required]],
+    });
   }
 
   
@@ -87,7 +86,6 @@ export  class LiveResultComponent implements OnInit {
       state : 'Delhi' ,
       state_code : 'DL',
     }; 
-    // this.selectedStateName_actual = this.selectedStateName;
     this.getUpdatedData();
   }
   
@@ -444,7 +442,6 @@ export  class LiveResultComponent implements OnInit {
       state : this.formData.get('state')?.value == 'DL' ? 'Delhi' : '',
       state_code : this.formData.get('state')?.value,
     }; 
-    this.selectedStateName_actual = this.selectedStateName;
     this.getUpdatedData();
   }
   
