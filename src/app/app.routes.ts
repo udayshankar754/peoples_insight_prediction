@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { LiveResultComponent } from './pages/live-result/live-result.component';
+import { RoundwiseAnalysisComponent } from './pages/roundwise-analysis/roundwise-analysis.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/live-result' },
@@ -25,6 +26,6 @@ export const routes: Routes = [
   },
   {
     path: 'roundwise-result-analysis',
-    loadComponent: () => import('./pages/roundwise-analysis/roundwise-analysis.component'),
+   component : RoundwiseAnalysisComponent
   },
 ];

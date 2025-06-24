@@ -51,6 +51,25 @@
   }
 }
 
+.action-btn-performed {
+  background: #52c41a; // green (success) color
+  border: none;
+  font-size: 16px;
+  padding: 8px 16px;
+  height: 40px;
+  color: white;
+  transition: all 0.3s ease;
+  cursor: default;
+
+  &:hover {
+    background: #73d13d;
+    transform: none; // No elevation if action is already performed
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+
+
 .maps-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
