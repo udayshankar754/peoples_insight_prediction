@@ -1,10 +1,12 @@
 // maps.component.ts
 import {
   Component,
+  EventEmitter,
   Inject,
   Input,
   OnChanges,
   OnInit,
+  Output,
   PLATFORM_ID,
   Renderer2,
   SimpleChanges,
@@ -51,6 +53,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 })
 export class ResultMapComponent implements OnInit, OnChanges {
   @Input() stateName: any;
+  @Output() dataEvent = new EventEmitter<any>();
   // stateName: any = { state: 'Delhi', state_code: 'DL', reload: true };
 
   optionData: any = [
@@ -475,6 +478,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
     this.shapeData = null;
     this.conclusionData = null;
     this.getUpdatedMapColor();
+    this.dataEvent.emit(event);
   }
 
   getConclusionData() {

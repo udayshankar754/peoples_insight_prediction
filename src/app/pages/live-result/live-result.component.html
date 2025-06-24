@@ -15,7 +15,7 @@
 
   <!-- Map Section -->
   <div class="map-container" *ngIf="selectedStateName">
-    <app-result-map [stateName]="selectedStateName"></app-result-map>
+    <app-result-map [stateName]="selectedStateName" (dataEvent)="receiveData($event)" ></app-result-map>
   </div>
 
   <!-- Charts Section -->
@@ -45,7 +45,7 @@
   <!-- Conclusion Table -->
   <div class="table-container" *ngIf="conclusion && conclusion?.length > 0">
     <nz-card nzTitle="Election Results Summary" [nzBordered]="true" class="table-card">
-      <nz-table #basicTable [nzData]="conclusion" [nzShowPagination]="false" [nzScroll]="{ x: '100%' }"
+      <nz-table #basicTable [nzData]="conclusion" [nzShowPagination]="false"
         class="summary-table">
         <thead>
           <tr>
