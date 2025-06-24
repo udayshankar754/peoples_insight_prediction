@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, switchMap, timer } from 'rxjs';
+import { Observable, shareReplay, Subject, switchMap, takeUntil, timer } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 @Injectable({
   providedIn: 'root',
 })
 export class LiveResultService {
+  private stopPolling$ = new Subject<void>();
+
   constructor(private http: HttpClient) {}
 
   getLiveResult() {
@@ -51,13 +53,13 @@ export class LiveResultService {
     return this.http.get(`${environment.baseUrl}result/sheet-wise-prediction/${state_code}`);
   }
 
-  // startPolling(interval: number): Observable<any> {
-  //   return timer(0, interval).pipe(
-  //     switchMap(() => {
-  //       return this.getLiveResult();
-  //     }),
-  //   );
-  // }
+  startPolling(interval: number): Observable<any> {
+    return timer(0, interval).pipe(
+      switchMap(() => {
+        return this.getLiveResult();
+      }),
+    );
+  }
 
   roundWiseReport() {
     return this.http.get(`${environment.baseUrl}result/round-wise-report`);

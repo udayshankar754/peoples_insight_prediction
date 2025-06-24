@@ -1,9 +1,16 @@
 <div class="page-container">
   <div class="header-section">
     <h2 class="heading-h2">Live Result Details</h2>
+   <div class="header-actions">
+    <div class="live-indicator">
+      <img src="./loader.gif" class="blended-loader">
+      <span class="blink-soft">Live</span>
+    </div>
+    
     <button nz-button nzType="primary" nzShape="round" (click)="getResultData()" class="refresh-btn">
       <i nz-icon nzType="reload"></i> Refresh
     </button>
+   </div>
   </div>
 
   <!-- Map Section -->
@@ -13,7 +20,7 @@
 
   <!-- Charts Section -->
   <div class="charts-container" *ngIf="resultData && resultData?.length > 0">
-    <div class="chart-card" *ngIf="dataSource_2 && dataSource_2?.length > 0">
+    <div class="chart-card" *ngIf="dataSource_2 && dataSource_2?.length > 0 && isBrowser()">
       <h3 class="chart-title">Predicted Result {{ removeLabel() }}</h3>
       <ejs-circularchart3d [tilt]="-45" [legendSettings]="{ visible: true, position: 'Bottom' }">
         <e-circularchart3d-series-collection>
@@ -23,7 +30,7 @@
         </e-circularchart3d-series-collection>
       </ejs-circularchart3d>
     </div>
-    <div class="chart-card" *ngIf="dataSource && dataSource?.length > 0">
+    <div class="chart-card" *ngIf="dataSource && dataSource?.length > 0 && isBrowser()">
       <h3 class="chart-title">Actual Result {{ removeLabel() }}</h3>
       <ejs-circularchart3d [tilt]="-45" [legendSettings]="{ visible: true, position: 'Bottom' }">
         <e-circularchart3d-series-collection>
@@ -148,7 +155,7 @@
               {{ data?.AC_NAME }}
             </td>
             <td nzAlign="center">{{ (data?.TURNOUT_25)?.toFixed(2) }}%</td>
-            <td nzAlign="center" class="text-red blink-soft">{{ data?.ROUND }}</td>
+            <td nzAlign="center">{{ data?.ROUND }}</td>
             <td nzAlign="center" [style]="getStyling(data?.RESULT_25)">{{ data?.RESULT_25 }}</td>
             <td nzAlign="center" [style]="getPrtyWiseBackround(data?.LL)">{{ data?.LL }}</td>
             <td nzAlign="center" [style]="getStyling(data?.EP_24)">{{ data?.EP_24 }}</td>

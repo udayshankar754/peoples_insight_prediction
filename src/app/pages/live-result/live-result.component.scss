@@ -20,7 +20,10 @@
   margin: 0;
   letter-spacing: -0.5px;
 }
-
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
 .refresh-btn {
   background: #1890ff;
   border: none;
@@ -122,16 +125,34 @@
   font-size: 16px;
   font-weight: 500;
 }
-
 .blink-soft {
   animation: blinker 2.5s linear infinite;
+  padding: 8px; 
 }
 
-@keyframes blinking {
+@keyframes blinker {
+  0%, 100% {
+    color: #ff0000; 
+  }
   50% {
-    opacity: 0.3;
+    color: #ffb0b0; 
   }
 }
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  background: inherit;
+  color: inherit;
+}
+
+.blended-loader {
+  height: 30px;
+  width: 50px;
+  margin-right: 4px;
+  mix-blend-mode: multiply;
+  background: transparent;
+}
+
 
 .correct {
   color: #52c41a;

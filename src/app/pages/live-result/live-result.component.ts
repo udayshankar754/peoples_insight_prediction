@@ -42,7 +42,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
   styleUrl: './live-result.component.scss'
 })
 
-export  class LiveResultComponent implements OnInit {
+export  class LiveResultComponent implements OnInit , OnDestroy {
   resultData: any;
   partyColorBi: any;
   partyColor: any;
@@ -57,7 +57,8 @@ export  class LiveResultComponent implements OnInit {
   dataSource_2 : any;
   selectedStateName : any;
   data = new BehaviorSubject<any>(null);  
-  
+  private pollingSubscription: any;
+
   
 
   constructor(
@@ -76,6 +77,9 @@ export  class LiveResultComponent implements OnInit {
     });
   }
 
+  isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
   
   ngOnInit(): void {
     this.getResultData();
@@ -86,7 +90,15 @@ export  class LiveResultComponent implements OnInit {
       state : 'Delhi' ,
       state_code : 'DL',
     }; 
-    this.getUpdatedData();
+    if (this.isBrowser()) {
+      this.getUpdatedData(); 
+    }
+  
+  }
+
+  ngOnDestroy(): void {
+    this.pollingSubscription?.unsubscribe();
+    // The stopPolling() method in the service will handle the subject cleanup
   }
   
   getResultData() {
@@ -389,9 +401,7 @@ export  class LiveResultComponent implements OnInit {
     ];
   }
 
-  isBrowser(): boolean {
-    return isPlatformBrowser(this.platformId);
-  }
+  
 
   removeLabel() {
     if (this.isBrowser()) {
@@ -458,13 +468,13 @@ export  class LiveResultComponent implements OnInit {
     this.router.navigate(['/roundwise-result', state_code, ac]);
   }
   getUpdatedData() {
-    // this.liveResultService.startPolling(10000).subscribe((data : any) => {
-    //   this.getConclusionData();
-    //   this.selectedStateName =   {
-    //     ...this.selectedStateName,
-    //    reload : true
-    //   }
-    //   this.resultData = data;
-    // })  
+    this.liveResultService.startPolling(10000).subscribe((data : any) => {
+      this.getConclusionData();
+      this.selectedStateName =   {
+        ...this.selectedStateName,
+       reload : true
+      }
+      this.resultData = data;
+    })  
   }
 }
