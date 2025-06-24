@@ -17,5 +17,9 @@ export const routes: Routes = [
   {
     path : 'live-result',
     loadComponent: () => import('./pages/live-result/live-result.component'),
-  }
+  },
+      {path : 'roundwise-result/:state_code/:ac_no', 
+        loadComponent: () => import('./pages/roundwise-result/roundwise-result.component')
+      },
+      {path : 'roundwise-result-analysis' , loadComponent: () => import('./pages/roundwise-analysis/roundwise-analysis.component')},
 ];
