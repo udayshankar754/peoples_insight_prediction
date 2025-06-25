@@ -81,18 +81,18 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.fetchStates();
     this.formData.get('state')?.valueChanges.subscribe((value: any) => {
-      this.selectedStateName = this.states.find((state: any) => state.value === value);
+      const state = this.states.find((state: any) => state.value === value);
+      this.selectedStateName = {
+        state: state?.label,
+        state_code: state?.value,
+      };
       this.getResultData();
       this.getPartyBiColorResult();
       this.getPartyColor();
       this.getPartyVotes();
-      this.selectedStateName = {
-        state: 'Delhi',
-        state_code: 'DL',
-      };
-      if (this.isBrowser()) {
-        this.getUpdatedData();
-      }
+      // if (this.isBrowser()) {
+      //   this.getUpdatedData();
+      // }
     });
   }
 
@@ -103,7 +103,10 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   }
 
   getResultData() {
-    this.liveResultService.getLiveResult().subscribe(
+    const data = this.states.find(
+      (state: any) => state.value === this.formData.get('state')?.value,
+    );
+    this.liveResultService.getLiveResult(data?.label, data?.value).subscribe(
       (res: any) => {
         // console.log(res);
         this.resultData = res;
@@ -142,7 +145,10 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   }
 
   getPartyVotes() {
-    this.liveResultService.getVotes().subscribe(
+    const data = this.states.find(
+      (state: any) => state.value === this.formData.get('state')?.value,
+    );
+    this.liveResultService.getVotes(data?.label).subscribe(
       (res: any) => {
         this.partyVote = res;
       },
@@ -301,35 +307,36 @@ export class LiveResultComponent implements OnInit, OnDestroy {
 
     let totalVotes = 0;
     this.partyVote?.forEach((votes: any) => (totalVotes += votes?.VOTES));
+    
 
     let bjpActualVoteShare = `${(
-      ((this.partyVote?.find((party: any) => party.party === 'Bharatiya Janata Party')?.VOTES ||
+      ((this.partyVote?.find((party: any) => party.party == 'BJP')?.VOTES ||
         0) /
         totalVotes) *
       100
-    )?.toFixed(2)} %`;
+    )?.toFixed(2)}`;
     let aapActualVoteShare = `${(
-      ((this.partyVote?.find((party: any) => party.party === 'Aam Aadmi Party')?.VOTES || 0) /
+      ((this.partyVote?.find((party: any) => party.party == 'AAP')?.VOTES || 0) /
         totalVotes) *
       100
-    )?.toFixed(2)} %`;
+    )?.toFixed(2)}`;
     let incActualVoteShare = `${(
-      ((this.partyVote?.find((party: any) => party.party === 'Indian National Congress')?.VOTES ||
+      ((this.partyVote?.find((party: any) => party.party === 'INC')?.VOTES ||
         0) /
         totalVotes) *
       100
-    )?.toFixed(2)} %`;
+    )?.toFixed(2)}`;
 
-    let bjpPrecVoteshare = '46.04 %';
-    let aapPrecVoteshare = '38.12 %';
-    let incPrecVoteshare = '6.66 %';
+    let bjpPrecVoteshare = '46.04';
+    let aapPrecVoteshare = '38.12';
+    let incPrecVoteshare = '6.66';
     let othervotes = 0;
 
     this.partyVote?.map((party: any) => {
       if (
-        party.party !== 'Bharatiya Janata Party' &&
-        party.party !== 'Aam Aadmi Party' &&
-        party.party !== 'Indian National Congress'
+        party.party !== 'BJP' &&
+        party.party !== 'AAP' &&
+        party.party !== 'INC'
       ) {
         othervotes += party?.VOTES;
       }
@@ -345,25 +352,25 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     this.dataSource_2 = [
       {
         x: 'BJP',
-        y: Number(bjpPrecVoteshare?.split(' ')[0]),
+        y: Number(bjpPrecVoteshare?.split(' ')[0] || 0),
         fill: this.getPartyWiseColorCodes('BJP'),
         text: 'BJP',
       },
       {
         x: 'AAP',
-        y: Number(aapPrecVoteshare?.split(' ')[0]),
+        y: Number(aapPrecVoteshare?.split(' ')[0] || 0),
         fill: this.getPartyWiseColorCodes('AAP'),
         text: 'AAP',
       },
       {
         x: 'INC',
-        y: Number(incPrecVoteshare?.split(' ')[0]),
+        y: Number(incPrecVoteshare?.split(' ')[0] || 0),
         fill: this.getPartyWiseColorCodes('INC'),
         text: 'INC',
       },
       {
         x: 'OTHERS',
-        y: Number(othersPredictedVoteShare),
+        y: Number(othersPredictedVoteShare || 0),
         fill: this.getPartyWiseColorCodes('OTHERS'),
         text: 'OTHERS',
       },
@@ -372,25 +379,25 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     this.dataSource = [
       {
         x: 'BJP',
-        y: Number(bjpActualVoteShare?.split(' ')[0]),
+        y: Number(bjpActualVoteShare?.split(' ')[0] || 0),
         fill: this.getPartyWiseColorCodes('BJP'),
         text: 'BJP',
       },
       {
         x: 'AAP',
-        y: Number(aapActualVoteShare?.split(' ')[0]),
+        y: Number(aapActualVoteShare?.split(' ')[0] || 0),
         fill: this.getPartyWiseColorCodes('AAP'),
         text: 'AAP',
       },
       {
         x: 'INC',
-        y: Number(incActualVoteShare?.split(' ')[0]),
+        y: Number(incActualVoteShare?.split(' ')[0] || 0),
         fill: this.getPartyWiseColorCodes('INC'),
         text: 'INC',
       },
       {
         x: 'OTHERS',
-        y: Number(othersVoteShare),
+        y: Number(othersVoteShare || 0),
         fill: this.getPartyWiseColorCodes('OTHERS'),
         text: 'OTHERS',
       },
@@ -503,17 +510,22 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     //   }
     //   this.resultData = data;
     // })
+    const data = this.states.find(
+      (state: any) => state.value === this.formData.get('state')?.value,
+    );
 
-    this.pollingSubscription = this.liveResultService.startPolling(10000).subscribe((response) => {
-      this.getConclusionData();
+    this.pollingSubscription = this.liveResultService
+      .startPolling(10000, data?.label, data?.value)
+      .subscribe((response) => {
+        this.getConclusionData();
 
-      this.selectedStateName = {
-        ...this.selectedStateName,
-        reload: true,
-      };
+        this.selectedStateName = {
+          ...this.selectedStateName,
+          reload: true,
+        };
 
-      this.resultData = response;
-    });
+        this.resultData = response;
+      });
   }
 
   receiveData(data: any) {

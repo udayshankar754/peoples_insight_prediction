@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, shareReplay, Subject, switchMap, takeUntil, timer } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
@@ -10,8 +10,12 @@ export class LiveResultService {
 
   constructor(private http: HttpClient) {}
 
-  getLiveResult() {
-    return this.http.get(`${environment.baseUrl}result/live-result?${new Date()}`);
+  getLiveResult(state : string , state_code : string)  {
+    let params = new HttpParams();
+
+    if (state) params = params.set('state', state);
+    if (state_code) params = params.set('state_code', state_code);
+    return this.http.get(`${environment.baseUrl}result/live-result?${new Date()}` , { params });
   }
 
   getPartyColorBi() {
@@ -22,8 +26,11 @@ export class LiveResultService {
     return this.http.get(`${environment.baseUrl}result/party-color`);
   }
 
-  getVotes() {
-    return this.http.get(`${environment.baseUrl}result/votes-percentage`);
+  getVotes(state : any) {
+    let params = new HttpParams();
+
+    if (state) params = params.set('state', state);
+    return this.http.get(`${environment.baseUrl}result/votes-percentage` ,{ params });
   }
 
   getStateCode() {
@@ -65,9 +72,9 @@ export class LiveResultService {
     return this.http.get(`${environment.baseUrl}result/round-wise-report`);
   }
 
-  startPolling(intervalMs: number): Observable<any> {
+  startPolling(intervalMs: number , state : string , state_code : string): Observable<any> {
     return timer(0, intervalMs).pipe(
-      switchMap(() => this.getLiveResult()),
+      switchMap(() => this.getLiveResult(state , state_code)),
       takeUntil(this.stopPolling$),
       shareReplay(1), // Ensures multiple subscribers don't trigger multiple requests
     );

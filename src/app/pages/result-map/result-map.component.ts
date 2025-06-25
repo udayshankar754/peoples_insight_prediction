@@ -161,7 +161,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
   }
 
   resultData() {
-    this.liveResultService.getLiveResult().subscribe(
+    this.liveResultService.getLiveResult(this.stateName?.state , this.stateName?.state_code).subscribe(
       (res: any) => {
         this.actualPartyData = res?.map((i: any) => {
           return {
@@ -190,7 +190,6 @@ export class ResultMapComponent implements OnInit, OnChanges {
   }
 
   dataforLabel() {
-    // let folderName = ('Delhi')?.toUpperCase();
     let folderName = this.stateName?.state?.toUpperCase();
     folderName = folderName.replace(/[&_]/g, '_');
     folderName = folderName.replace(/_+/g, '_');
@@ -262,7 +261,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
   }
 
   getUpdatedMapColor() {
-    this.liveResultService.getLiveResult().subscribe(
+    this.liveResultService.getLiveResult(this.stateName?.state , this.stateName?.state_code).subscribe(
       (res: any) => {
         this.actualPartyData = res?.map((i: any) => {
           return {

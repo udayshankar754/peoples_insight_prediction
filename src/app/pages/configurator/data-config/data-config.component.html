@@ -32,7 +32,7 @@
         </nz-upload>
       </div>
       
-      <button nz-button nzType="primary" nzShape="round" (click)="saveToDatabase()" [disabled]="data?.length === 0"
+      <button nz-button nzType="primary" nzShape="round" (click)="saveToDatabase()" [disabled]="data?.length === 0 || fileError"
         class="save-btn">
         <i nz-icon nzType="save"></i> Save to Database
       </button>

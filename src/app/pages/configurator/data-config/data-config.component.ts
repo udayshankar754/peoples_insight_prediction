@@ -38,7 +38,7 @@ export class DataConfigComponent implements OnInit {
     state: false,
   };
   fileList: NzUploadFile[] = [];
-
+  fileError: boolean = false;
 
   constructor(
     private excelParser: ExcelParserService,
@@ -93,7 +93,6 @@ export class DataConfigComponent implements OnInit {
   //   }
   // }
 
-
   beforeUpload = (file: NzUploadFile): boolean => {
     this.fileList = [file]; // allow only one file
     return false; // prevent auto-upload
@@ -107,6 +106,7 @@ export class DataConfigComponent implements OnInit {
       this.data = [];
       this.columns = [];
     } else {
+      this.fileError = false;
       const file = event.file?.originFileObj;
 
       if (!file) {
@@ -123,8 +123,18 @@ export class DataConfigComponent implements OnInit {
         .then((parsedData: any[]) => {
           this.data = parsedData;
           this.columns = parsedData.length > 0 ? Object.keys(parsedData[0]) : [];
+          if (this.data.length > 0) {
+            let firstRow = this.data[0];
+            if (!(Object.keys(firstRow)?.map((i: any) => i?.toLowerCase())?.includes('ac_no'))) {
+              this.messageService.create('error', 'Ac No column is required');
+              this.fileError = true;
+              // Optional: Set file status to 'error'
+              event.file.status = 'error';
+            }
+          }
         })
         .catch((error) => {
+      this.fileError = true;
           console.error('File parsing error:', error);
           this.messageService.error('Failed to parse uploaded file.');
           // Optional: Set file status to 'error'
@@ -132,7 +142,6 @@ export class DataConfigComponent implements OnInit {
         });
     }
   }
- 
 
   saveToDatabase() {
     // console.log('Saving to DB:', this.data);
