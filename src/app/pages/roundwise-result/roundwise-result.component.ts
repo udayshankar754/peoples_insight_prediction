@@ -1,11 +1,4 @@
-import {
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID,
-  Renderer2,
-} from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -17,12 +10,19 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 @Component({
   selector: 'app-roundwise-result',
   standalone: true,
-  imports: [CommonModule, NzTableModule, CircularChart3DAllModule , NzCardModule , RouterModule , NzButtonModule ],
+  imports: [
+    CommonModule,
+    NzTableModule,
+    CircularChart3DAllModule,
+    NzCardModule,
+    RouterModule,
+    NzButtonModule,
+  ],
   host: { ngSkipHydration: 'true' },
   templateUrl: './roundwise-result.component.html',
-  styleUrl: './roundwise-result.component.scss'
+  styleUrl: './roundwise-result.component.scss',
 })
-export  class RoundwiseResultComponent implements OnInit , OnDestroy {
+export class RoundwiseResultComponent implements OnInit, OnDestroy {
   state_code: any;
   ac_no: any;
   round_no: any;
@@ -37,11 +37,10 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
     private liveResultService: LiveResultService,
     private messageService: NzMessageService,
     private renderer: Renderer2,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
-  ngOnInit(): void {  
-
+  ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.state_code = params.get('state_code');
       this.ac_no = params.get('ac_no');
@@ -50,7 +49,6 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
     this.queryParamsSubscription = this.route.queryParamMap.subscribe((queryParams) => {
       this.round_no = queryParams.get('round');
       this.getStart();
-
     });
   }
 
@@ -60,14 +58,12 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
     }
   }
 
-
   getStart() {
     this.result = [];
     this.dataSource = [];
     this.partyColor = [];
     this.getPartyColor();
     this.stateCode();
-   
   }
 
   stateCode() {
@@ -75,8 +71,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
       (res: any) => {
         if (res && res?.length > 0) {
           let validState = res?.find(
-            (i: any) =>
-              i?.State_Code?.toLowerCase() == this.state_code?.toLowerCase()
+            (i: any) => i?.State_Code?.toLowerCase() == this.state_code?.toLowerCase(),
           );
 
           if (validState) {
@@ -89,7 +84,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch State code List');
-      }
+      },
     );
   }
 
@@ -99,8 +94,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
         if (res && res?.length > 0) {
           // console.log(res);
           let validAcNo = res?.find(
-            (i: any) =>
-              i?.AC_NO?.toString()?.toLowerCase() == this.ac_no?.toLowerCase()
+            (i: any) => i?.AC_NO?.toString()?.toLowerCase() == this.ac_no?.toLowerCase(),
           );
           if (validAcNo) {
             if (this.round_no) {
@@ -116,7 +110,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch Ac List');
-      }
+      },
     );
   }
 
@@ -125,8 +119,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
       (res: any) => {
         if (res && res?.length > 0) {
           let validRound = res?.find(
-            (i: any) =>
-              i?.ROUND?.toString()?.toLowerCase() == round?.toLowerCase()
+            (i: any) => i?.ROUND?.toString()?.toLowerCase() == round?.toLowerCase(),
           );
 
           if (validRound) {
@@ -139,13 +132,13 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch Ac List');
-      }
+      },
     );
   }
 
   getPartyWiseColorCodes(party: any) {
     let color = this.partyColor?.find(
-      (i: any) => i?.PARTY?.toLowerCase() == party?.toLowerCase()
+      (i: any) => i?.PARTY?.toLowerCase() == party?.toLowerCase(),
     )?.CODES;
     return color;
   }
@@ -158,46 +151,43 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch party  color result');
-      }
+      },
     );
   }
 
   resultData(state_code: any, ac_no: any, round_no?: any) {
     if (round_no) {
-      this.liveResultService
-        .roundwiseResult(state_code, ac_no, round_no)
-        .subscribe(
-          (res: any) => {
-            if (res && res?.length > 0) {
-              let totalVotes = 0;
-              res?.forEach((element: any) => (totalVotes += element?.votes));
-              this.result = res?.map((i: any) => {
-                return {
-                  ...i,
-                  round_wise_vote_share: `${(
-                    (Number(i?.votes) / Number(totalVotes)) *
-                    100
-                  )?.toFixed(2)} %`,
-                };
-              });
+      this.liveResultService.roundwiseResult(state_code, ac_no, round_no).subscribe(
+        (res: any) => {
+          if (res && res?.length > 0) {
+            let totalVotes = 0;
+            res?.forEach((element: any) => (totalVotes += element?.votes));
+            this.result = res?.map((i: any) => {
+              return {
+                ...i,
+                round_wise_vote_share: `${((Number(i?.votes) / Number(totalVotes)) * 100)?.toFixed(
+                  2,
+                )} %`,
+              };
+            });
 
-              this.dataSource = this.result?.map((i: any) => {
-                return {
-                  x: i?.party_alice,
-                  y: Number(i?.round_wise_vote_share?.split(' ')[0]),
-                  fill: this.getPartyWiseColorCodes(i?.party_alice),
-                  text: i?.party_alice,
-                };
-              });
-            } else {
-              this.messageService.info('No Result Found');
-            }
-          },
-          (err: any) => {
-            console.error(err);
-            this.messageService.error('Failed to fetch Round wise List');
+            this.dataSource = this.result?.map((i: any) => {
+              return {
+                x: i?.party_alice,
+                y: Number(i?.round_wise_vote_share?.split(' ')[0]),
+                fill: this.getPartyWiseColorCodes(i?.party_alice),
+                text: i?.party_alice,
+              };
+            });
+          } else {
+            this.messageService.info('No Result Found');
           }
-        );
+        },
+        (err: any) => {
+          console.error(err);
+          this.messageService.error('Failed to fetch Round wise List');
+        },
+      );
     } else {
       this.liveResultService.acwiseResult(state_code, ac_no).subscribe(
         (res: any) => {
@@ -243,7 +233,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
         (err: any) => {
           console.error(err);
           this.messageService.error('Failed to fetch Ac wise List');
-        }
+        },
       );
     }
   }
@@ -256,7 +246,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
     if (this.isBrowser()) {
       // Select the banner based on the style and content
       const banners = document.querySelectorAll(
-        'div[style*="position: fixed"][style*="top: 10px"][style*="left: 10px"][style*="right: 10px"]'
+        'div[style*="position: fixed"][style*="top: 10px"][style*="left: 10px"][style*="right: 10px"]',
       );
 
       banners.forEach((banner) => {
@@ -264,7 +254,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
         if (
           banner.textContent &&
           banner.textContent.includes(
-            'This application was built using a trial version of Syncfusion'
+            'This application was built using a trial version of Syncfusion',
           )
         ) {
           if (banner.parentNode) {
@@ -275,7 +265,7 @@ export  class RoundwiseResultComponent implements OnInit , OnDestroy {
 
       // Select the overlay element and remove it if found
       const overlay = document.querySelector(
-        'div[style*="position: fixed"][style*="top: 0"][style*="left: 0"][style*="right: 0"][style*="bottom: 0"][style*="background-color: rgba(0, 0, 0, 0.5)"]'
+        'div[style*="position: fixed"][style*="top: 0"][style*="left: 0"][style*="right: 0"][style*="bottom: 0"][style*="background-color: rgba(0, 0, 0, 0.5)"]',
       );
       if (overlay && overlay.parentNode) {
         this.renderer.removeChild(overlay.parentNode, overlay);

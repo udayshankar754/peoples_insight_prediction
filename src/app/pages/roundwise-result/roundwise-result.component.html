@@ -19,16 +19,15 @@
     <div *ngFor="let item of result" class="round-section">
       <nz-card [nzTitle]="roundTitle" [nzBordered]="true" class="round-card">
         <ng-template #roundTitle>
-          <a class="link-container" (click)="roundWiseDetails(item?.round)">Round {{ item?.round }}</a>
+          <a class="link-container" (click)="roundWiseDetails(item?.round)"
+            >Round {{ item?.round }}</a
+          >
         </ng-template>
 
         <!-- Chart -->
         <div *ngIf="item?.dataSource && item?.dataSource?.length > 0" class="chart-container">
           <h3 class="chart-title">{{ removeLabel() }}</h3>
-          <ejs-circularchart3d
-            align="center"
-            [tilt]="-45" [legendSettings]="{ visible: true }"
-          >
+          <ejs-circularchart3d align="center" [tilt]="-45" [legendSettings]="{ visible: true }">
             <e-circularchart3d-series-collection>
               <e-circularchart3d-series
                 [dataSource]="item?.dataSource"

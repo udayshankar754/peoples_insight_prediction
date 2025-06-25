@@ -24,6 +24,5 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
     provideHttpClient(withFetch()),
-
   ],
 };

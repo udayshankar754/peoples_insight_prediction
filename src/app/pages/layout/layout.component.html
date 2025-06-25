@@ -8,29 +8,45 @@
     [nzTrigger]="null"
   >
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
-        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo" />
-        <h1>Ant Design of Angular</h1>
-      </a>
+      <ng-container *ngIf="isCollapsed; else expandedLogo">
+        <a href="https://www.peoplesinsight.in/" target="_blank">
+          <img src="./logo/logo-collapse.png" alt="logo" class="collapsed-logo" />
+        </a>
+      </ng-container>
+
+      <ng-template #expandedLogo>
+        <a href="https://www.peoplesinsight.in/" target="_blank">
+          <img src="./logo/logo-dark.webp" alt="logo" />
+        </a>
+      </ng-template>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+      <li
+        nz-submenu
+        nzTitle="Dashboard"
+        nzIcon="dashboard"
+        [(nzOpen)]="openMap['dashboard']"
+        (nzOpenChange)="openHandler('dashboard')"
+      >
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
+            <a routerLink="/home/data-config">Data Configuration</a>
           </li>
         </ul>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+      <li
+        nz-submenu
+        nzTitle="Result"
+        nzIcon="fund-projection-screen"
+        [(nzOpen)]="openMap['result']"
+        (nzOpenChange)="openHandler('result')"
+      >
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
+            <a routerLink="/live-result" target="_blank">Live Result</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/roundwise-result-analysis" target="_blank">Round Wise Analysis</a>
           </li>
         </ul>
       </li>

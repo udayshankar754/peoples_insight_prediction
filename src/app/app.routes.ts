@@ -5,15 +5,14 @@ import { RoundwiseAnalysisComponent } from './pages/roundwise-analysis/roundwise
 import { RoundwiseResultComponent } from './pages/roundwise-result/roundwise-result.component';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/live-result' },
+  { path: '', pathMatch: 'full', redirectTo: '/home' },
   {
     path: 'home',
     component: LayoutComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: '/welcome' },
       {
-        path: 'welcome',
-        loadChildren: () => import('./pages/welcome/welcome.routes').then((m) => m.WELCOME_ROUTES),
+        path: 'data-config',
+        loadComponent: () => import('./pages/configurator/data-config/data-config.component'),
       },
     ],
   },
@@ -23,10 +22,10 @@ export const routes: Routes = [
   },
   {
     path: 'roundwise-result/:state_code/:ac_no',
-    component : RoundwiseResultComponent
+    component: RoundwiseResultComponent,
   },
   {
     path: 'roundwise-result-analysis',
-   component : RoundwiseAnalysisComponent
+    component: RoundwiseAnalysisComponent,
   },
 ];

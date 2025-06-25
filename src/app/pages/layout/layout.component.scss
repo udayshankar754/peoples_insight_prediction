@@ -42,9 +42,13 @@
 
 .sidebar-logo img {
   display: inline-block;
-  height: 32px;
-  width: 32px;
+  height: 50px;
+  width: 90%;
   vertical-align: middle;
+}
+.collapsed-logo {
+  width: 30px !important;
+  height: 30px !important;
 }
 
 .sidebar-logo h1 {

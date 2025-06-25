@@ -55,10 +55,9 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   selectedStateName: any;
   data = new BehaviorSubject<any>(null);
   private pollingSubscription: any;
-  selectLoader : {
-    state : boolean,
+  selectLoader: {
+    state: boolean;
   } = { state: false };
-  
 
   constructor(
     private liveResultService: LiveResultService,
@@ -83,19 +82,18 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     this.fetchStates();
     this.formData.get('state')?.valueChanges.subscribe((value: any) => {
       this.selectedStateName = this.states.find((state: any) => state.value === value);
-       this.getResultData();
-    this.getPartyBiColorResult();
-    this.getPartyColor();
-    this.getPartyVotes();
-    this.selectedStateName = {
-      state: 'Delhi',
-      state_code: 'DL',
-    };
-    if (this.isBrowser()) {
-      this.getUpdatedData();
-    }
-    })
-   
+      this.getResultData();
+      this.getPartyBiColorResult();
+      this.getPartyColor();
+      this.getPartyVotes();
+      this.selectedStateName = {
+        state: 'Delhi',
+        state_code: 'DL',
+      };
+      if (this.isBrowser()) {
+        this.getUpdatedData();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -458,19 +456,19 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   }
 
   fetchStates() {
-   this.liveResultService.getStateCode().subscribe(
-        (data : any) => {
-          console.log(data);
-          this.states = data.map((state : any) => ({
-            label: state?.state,
-            value: state?.state_code,
-          }));
-        },
-        (error : any) => {
-          console.error('Error fetching states:', error);
-          this.messageService.error('Failed to fetch states. Please try again later.');
-        }
-      );
+    this.liveResultService.getStateCode().subscribe(
+      (data: any) => {
+        console.log(data);
+        this.states = data.map((state: any) => ({
+          label: state?.state,
+          value: state?.state_code,
+        }));
+      },
+      (error: any) => {
+        console.error('Error fetching states:', error);
+        this.messageService.error('Failed to fetch states. Please try again later.');
+      },
+    );
   }
   onStateChange() {
     this.getResultData();

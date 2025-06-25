@@ -2,17 +2,35 @@
   <div class="header-section">
     <h2 class="heading-h2">Election Results Map</h2>
     <div class="header-actions">
-      <nz-select [(ngModel)]="selectedOption" (ngModelChange)="onSelectedOptionChange($event)"
-        nzPlaceHolder="Select Option" class="select-option">
-        <nz-option *ngFor="let item of optionData" [nzValue]="item?.value" [nzLabel]="item?.label"></nz-option>
+      <nz-select
+        [(ngModel)]="selectedOption"
+        (ngModelChange)="onSelectedOptionChange($event)"
+        nzPlaceHolder="Select Option"
+        class="select-option"
+      >
+        <nz-option
+          *ngFor="let item of optionData"
+          [nzValue]="item?.value"
+          [nzLabel]="item?.label"
+        ></nz-option>
       </nz-select>
-      <button nz-button nzType="primary" nzShape="round" (click)="toggleDifference()"
-        [ngClass]="isVisible && differenceListData ? 'action-btn-performed' : 'action-btn'">
-
+      <button
+        nz-button
+        nzType="primary"
+        nzShape="round"
+        (click)="toggleDifference()"
+        [ngClass]="isVisible && differenceListData ? 'action-btn-performed' : 'action-btn'"
+      >
         <i nz-icon nzType="swap"></i> Result Fallback
       </button>
-      <button nz-button nzType="primary" nzShape="round" [routerLink]="['/roundwise-result-analysis']"
-        routerLinkActive="router-link-active" class="action-btn">
+      <button
+        nz-button
+        nzType="primary"
+        nzShape="round"
+        [routerLink]="['/roundwise-result-analysis']"
+        routerLinkActive="router-link-active"
+        class="action-btn"
+      >
         <i nz-icon nzType="bar-chart"></i> Round Wise Analysis
       </button>
     </div>
@@ -20,13 +38,22 @@
 
   <div class="maps-container">
     <!-- Predicted Result Map -->
-    <nz-card nzTitle="Predicted Result {{ removeLabel() }}" [nzBordered]="true" class="map-card"
-      *ngIf="shapeData && partyColorData">
+    <nz-card
+      nzTitle="Predicted Result {{ removeLabel() }}"
+      [nzBordered]="true"
+      class="map-card"
+      *ngIf="shapeData && partyColorData"
+    >
       <ejs-maps id="predicted-map" [zoomSettings]="zoomSettings" class="map-content">
         <e-layers>
-          <e-layer [shapeData]="shapeData" [shapePropertyPath]="shapePropertyPath" [shapeDataPath]="shapeDataPath"
-            [dataSource]="selectedColorData" [shapeSettings]="shapeSettings"
-            [tooltipSettings]="tooltipSettings"></e-layer>
+          <e-layer
+            [shapeData]="shapeData"
+            [shapePropertyPath]="shapePropertyPath"
+            [shapeDataPath]="shapeDataPath"
+            [dataSource]="selectedColorData"
+            [shapeSettings]="shapeSettings"
+            [tooltipSettings]="tooltipSettings"
+          ></e-layer>
         </e-layers>
       </ejs-maps>
     </nz-card>
@@ -38,13 +65,22 @@
     </nz-card>
 
     <!-- Actual Result Map -->
-    <nz-card nzTitle="Actual Result {{ removeLabel() }}" [nzBordered]="true" class="map-card"
-      *ngIf="shapeData && partyColorData">
+    <nz-card
+      nzTitle="Actual Result {{ removeLabel() }}"
+      [nzBordered]="true"
+      class="map-card"
+      *ngIf="shapeData && partyColorData"
+    >
       <ejs-maps id="actual-map" [zoomSettings]="zoomSettings" class="map-content">
         <e-layers>
-          <e-layer [shapeData]="shapeData" [shapePropertyPath]="shapePropertyPath" [shapeDataPath]="shapeDataPath"
-            [dataSource]="selectedColorData_2" [shapeSettings]="shapeSettings"
-            [tooltipSettings]="tooltipSettings"></e-layer>
+          <e-layer
+            [shapeData]="shapeData"
+            [shapePropertyPath]="shapePropertyPath"
+            [shapeDataPath]="shapeDataPath"
+            [dataSource]="selectedColorData_2"
+            [shapeSettings]="shapeSettings"
+            [tooltipSettings]="tooltipSettings"
+          ></e-layer>
         </e-layers>
       </ejs-maps>
     </nz-card>
@@ -59,8 +95,13 @@
     <div class="table-container" *ngIf="conclusionData || !conclusionData">
       <nz-card nzTitle="Results Summary" [nzBordered]="true" class="map-card">
         <ng-container *ngIf="conclusionData; else loadingTemplate">
-          <nz-table #basicTable [nzData]="conclusionData" [nzShowPagination]="conclusionData?.length > 10"
-            [nzPageSize]="10" class="summary-table">
+          <nz-table
+            #basicTable
+            [nzData]="conclusionData"
+            [nzShowPagination]="conclusionData?.length > 10"
+            [nzPageSize]="10"
+            class="summary-table"
+          >
             <thead>
               <tr>
                 <th nzAlign="center" class="th-class">Party</th>
@@ -88,14 +129,18 @@
     </div>
   </div>
 
-
-
   <!-- Difference Table -->
   <div class="table-container" *ngIf="isVisible && differenceListData">
     <nz-card nzTitle="Prediction vs Actual Differences" [nzBordered]="true" class="table-card">
       <ng-container *ngIf="differenceListData; else loadingTemplate">
-        <nz-table #basicTable [nzData]="differenceListData" [nzPageSize]="5"
-          [nzShowPagination]="differenceListData?.length > 5" [nzScroll]="{ x: '800px' }" class="difference-table">
+        <nz-table
+          #basicTable
+          [nzData]="differenceListData"
+          [nzPageSize]="5"
+          [nzShowPagination]="differenceListData?.length > 5"
+          [nzScroll]="{ x: '800px' }"
+          class="difference-table"
+        >
           <thead>
             <tr>
               <th nzAlign="center" class="th-class">AC No</th>

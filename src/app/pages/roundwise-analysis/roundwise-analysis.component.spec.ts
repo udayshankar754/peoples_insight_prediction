@@ -8,9 +8,8 @@ describe('RoundwiseAnalysisComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoundwiseAnalysisComponent]
-    })
-    .compileComponents();
+      imports: [RoundwiseAnalysisComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RoundwiseAnalysisComponent);
     component = fixture.componentInstance;

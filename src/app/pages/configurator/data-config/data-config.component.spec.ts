@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResultMapComponent } from './result-map.component';
+import { DataConfigComponent } from './data-config.component';
 
-describe('ResultMapComponent', () => {
-  let component: ResultMapComponent;
-  let fixture: ComponentFixture<ResultMapComponent>;
+describe('DataConfigComponent', () => {
+  let component: DataConfigComponent;
+  let fixture: ComponentFixture<DataConfigComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResultMapComponent],
+      imports: [DataConfigComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ResultMapComponent);
+    fixture = TestBed.createComponent(DataConfigComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

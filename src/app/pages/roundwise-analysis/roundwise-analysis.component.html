@@ -1,12 +1,12 @@
 <div class="page-container">
   <div class="header-section">
     <h2 class="heading-h2">Round-Wise Result Analysis</h2>
-    <nz-select
-      [(ngModel)]="selectedOption"
-      nzPlaceHolder="Select Option"
-      class="select-option"
-    >
-      <nz-option *ngFor="let item of optionData" [nzValue]="item?.value" [nzLabel]="item?.label"></nz-option>
+    <nz-select [(ngModel)]="selectedOption" nzPlaceHolder="Select Option" class="select-option">
+      <nz-option
+        *ngFor="let item of optionData"
+        [nzValue]="item?.value"
+        [nzLabel]="item?.label"
+      ></nz-option>
     </nz-select>
   </div>
 
@@ -14,7 +14,13 @@
     <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
   </nz-card>
 
-  <div class="table-container" *ngIf="resultData?.roundWiseResult && resultData?.roundWiseResult?.length > 0; else noDataTemplate">
+  <div
+    class="table-container"
+    *ngIf="
+      resultData?.roundWiseResult && resultData?.roundWiseResult?.length > 0;
+      else noDataTemplate
+    "
+  >
     <nz-card nzTitle="Round-Wise Election Results" [nzBordered]="true" class="table-card">
       <nz-table
         #basicTable
@@ -23,27 +29,26 @@
         [nzScroll]="{ x: calculateScrollWidth() }"
         class="roundwise-table"
       >
-      <thead>
-        <tr>
-          <th  nzAlign="center" class="th-class" nzWidth="80px" rowSpan="2">Ac_no</th>
-          <th  nzAlign="center" class="th-class" nzWidth="150px" rowSpan="2">Ac_Name</th>
-          <th nzAlign="center"
-          class="th-class" *ngFor="let round of maxRounds; let i = index" colSpan="2">
-            Round {{i + 1}}
-          </th>
-        </tr>
-        <tr>
-          <ng-container *ngFor="let round of maxRounds; let i = index">
-            <th nzAlign="center" class="th-class" nzWidth="100px">
-              Prediction
+        <thead>
+          <tr>
+            <th nzAlign="center" class="th-class" nzWidth="80px" rowSpan="2">Ac_no</th>
+            <th nzAlign="center" class="th-class" nzWidth="150px" rowSpan="2">Ac_Name</th>
+            <th
+              nzAlign="center"
+              class="th-class"
+              *ngFor="let round of maxRounds; let i = index"
+              colSpan="2"
+            >
+              Round {{ i + 1 }}
             </th>
-            <th nzAlign="center" class="th-class" nzWidth="100px">
-              Actual
-            </th>
-          </ng-container>
-          
-        </tr>
-      </thead>
+          </tr>
+          <tr>
+            <ng-container *ngFor="let round of maxRounds; let i = index">
+              <th nzAlign="center" class="th-class" nzWidth="100px">Prediction</th>
+              <th nzAlign="center" class="th-class" nzWidth="100px">Actual</th>
+            </ng-container>
+          </tr>
+        </thead>
         <tbody>
           <tr *ngFor="let data of getAcNo(resultData?.roundWiseResult)">
             <td nzAlign="center">{{ getData(data, 'AC_NO') }}</td>

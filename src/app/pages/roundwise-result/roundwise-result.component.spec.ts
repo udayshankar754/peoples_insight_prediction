@@ -8,9 +8,8 @@ describe('RoundwiseResultComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoundwiseResultComponent]
-    })
-    .compileComponents();
+      imports: [RoundwiseResultComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RoundwiseResultComponent);
     component = fixture.componentInstance;

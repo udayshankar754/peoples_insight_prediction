@@ -127,15 +127,16 @@
 }
 .blink-soft {
   animation: blinker 2.5s linear infinite;
-  padding: 8px; 
+  padding: 8px;
 }
 
 @keyframes blinker {
-  0%, 100% {
-    color: #ff0000; 
+  0%,
+  100% {
+    color: #ff0000;
   }
   50% {
-    color: #ffb0b0; 
+    color: #ffb0b0;
   }
 }
 .live-indicator {
@@ -152,7 +153,6 @@
   mix-blend-mode: multiply;
   background: transparent;
 }
-
 
 .correct {
   color: #52c41a;

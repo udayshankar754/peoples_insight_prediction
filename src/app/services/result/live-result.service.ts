@@ -69,7 +69,7 @@ export class LiveResultService {
     return timer(0, intervalMs).pipe(
       switchMap(() => this.getLiveResult()),
       takeUntil(this.stopPolling$),
-      shareReplay(1) // Ensures multiple subscribers don't trigger multiple requests
+      shareReplay(1), // Ensures multiple subscribers don't trigger multiple requests
     );
   }
 
