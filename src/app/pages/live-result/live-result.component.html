@@ -1,186 +1,230 @@
 <div class="page-container">
-  <div class="header-section">
-    <h2 class="heading-h2">Live Result Details</h2>
-   <div class="header-actions">
-    <div class="live-indicator">
-      <img src="./loader.gif" class="blended-loader">
-      <span class="blink-soft">Live</span>
+  
+
+    <div class="header-section">
+      <h2 class="heading-h2">Live Result Details</h2>
+      <div class="header-actions">
+        <div class="live-indicator">
+          <img src="./loader.gif" class="blended-loader">
+          <span class="blink-soft">Live</span>
+        </div>
+
+        <button nz-button nzType="primary" nzShape="round" (click)="getResultData()" class="refresh-btn">
+          <i nz-icon nzType="reload"></i> Refresh
+        </button>
+      </div>
     </div>
+
+    <div>
+      <form [formGroup]="formData">
+        <div *ngIf="states?.length > 0">
+          <div>
+            <label>State : </label>
+          </div>
+          <div>
+            <nz-select nzShowSearch formControlName="state" nzAllowClear nzPlaceHolder="Choose"
+              [nzLoading]="selectLoader.state">
+              <nz-option [nzLabel]="type?.label" [nzValue]="type?.value" *ngFor="let type of states"></nz-option>
+            </nz-select>
+          </div>
     
-    <button nz-button nzType="primary" nzShape="round" (click)="getResultData()" class="refresh-btn">
-      <i nz-icon nzType="reload"></i> Refresh
-    </button>
-   </div>
-  </div>
-
-  <!-- Map Section -->
-  <div class="map-container" *ngIf="selectedStateName">
-    <app-result-map [stateName]="selectedStateName" (dataEvent)="receiveData($event)" ></app-result-map>
-  </div>
-
-  <!-- Charts Section -->
-  <div class="charts-container" *ngIf="resultData && resultData?.length > 0">
-    <div class="chart-card" *ngIf="dataSource_2 && dataSource_2?.length > 0 && isBrowser()">
-      <h3 class="chart-title">Predicted Result {{ removeLabel() }}</h3>
-      <ejs-circularchart3d [tilt]="-45" [legendSettings]="{ visible: true, position: 'Bottom' }">
-        <e-circularchart3d-series-collection>
-          <e-circularchart3d-series [dataSource]="dataSource_2" xName="x" yName="y"
-            [dataLabel]="{ visible: true, font: { size: '14px', color: '#fff' } }"
-            [pointColorMapping]="'fill'"></e-circularchart3d-series>
-        </e-circularchart3d-series-collection>
-      </ejs-circularchart3d>
+        </div>
+  
+      </form>
     </div>
-    <div class="chart-card" *ngIf="dataSource && dataSource?.length > 0 && isBrowser()">
-      <h3 class="chart-title">Actual Result {{ removeLabel() }}</h3>
-      <ejs-circularchart3d [tilt]="-45" [legendSettings]="{ visible: true, position: 'Bottom' }">
-        <e-circularchart3d-series-collection>
-          <e-circularchart3d-series [dataSource]="dataSource" xName="x" yName="y"
-            [dataLabel]="{ visible: true, font: { size: '14px', color: '#fff' } }"
-            [pointColorMapping]="'fill'"></e-circularchart3d-series>
-        </e-circularchart3d-series-collection>
-      </ejs-circularchart3d>
+
+    <!-- Map Section -->
+    <div class="map-container" *ngIf="selectedStateName">
+      <app-result-map [stateName]="selectedStateName" (dataEvent)="receiveData($event)"></app-result-map>
     </div>
-  </div>
 
-  <!-- Conclusion Table -->
-  <div class="table-container" *ngIf="conclusion && conclusion?.length > 0">
-    <nz-card nzTitle="Election Results Summary" [nzBordered]="true" class="table-card">
-      <nz-table #basicTable [nzData]="conclusion" [nzShowPagination]="false"
-        class="summary-table">
-        <thead>
-          <tr>
-            <th nzAlign="center" class="th-class">Party</th>
-            <th nzAlign="center" class="th-class">Actual Result</th>
-            <th nzAlign="center" class="th-class">Expected Result</th>
-            <th nzAlign="center" class="th-class">Prediction</th>
-            <th nzAlign="center" class="th-class">Actual Vote Share</th>
-            <th nzAlign="center" class="th-class">Predicted Vote Share</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of conclusion">
-            <td nzAlign="center">{{ data?.party }}</td>
-            <td nzAlign="center">{{ data?.actualResult }}</td>
-            <td nzAlign="center">{{ data?.actualResult }} / {{ data?.expectedResult }}</td>
-            <td nzAlign="center" [ngClass]="data?.Predection === 'Correct' ? 'correct' : 'incorrect'">
-              {{ data?.Predection }}
-            </td>
-            <td nzAlign="center">{{ data?.actualVoteShare }}%</td>
-            <td nzAlign="center">{{ data?.precVoteShare }}%</td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </nz-card>
-  </div>
+    <!-- Charts Section -->
+    <div class="charts-container" *ngIf="resultData && resultData?.length > 0">
+      <div class="chart-card" *ngIf="dataSource_2 && dataSource_2?.length > 0 && isBrowser()">
+        <h3 class="chart-title">Predicted Result {{ removeLabel() }}</h3>
+        <ejs-circularchart3d [tilt]="-45" [legendSettings]="{ visible: true, position: 'Bottom' }">
+          <e-circularchart3d-series-collection>
+            <e-circularchart3d-series [dataSource]="dataSource_2" xName="x" yName="y"
+              [dataLabel]="{ visible: true, font: { size: '14px', color: '#fff' } }"
+              [pointColorMapping]="'fill'"></e-circularchart3d-series>
+          </e-circularchart3d-series-collection>
+        </ejs-circularchart3d>
+      </div>
+      <div class="chart-card" *ngIf="dataSource && dataSource?.length > 0 && isBrowser()">
+        <h3 class="chart-title">Actual Result {{ removeLabel() }}</h3>
+        <ejs-circularchart3d [tilt]="-45" [legendSettings]="{ visible: true, position: 'Bottom' }">
+          <e-circularchart3d-series-collection>
+            <e-circularchart3d-series [dataSource]="dataSource" xName="x" yName="y"
+              [dataLabel]="{ visible: true, font: { size: '14px', color: '#fff' } }"
+              [pointColorMapping]="'fill'"></e-circularchart3d-series>
+          </e-circularchart3d-series-collection>
+        </ejs-circularchart3d>
+      </div>
+    </div>
 
-  <!-- Detailed Results Table -->
-  <div class="table-container" *ngIf="resultData && resultData?.length > 0">
-    <nz-card nzTitle="Detailed Constituency Results" [nzBordered]="true" class="table-card">
-      <nz-table #basicTable [nzData]="resultData" [nzShowPagination]="false" [nzScroll]="{ x: '2400px' }"
-        class="detailed-table">
-        <thead>
-          <tr>
-            <th nzAlign="center" class="th-class" nzWidth="80px">AC_NO</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">AC_NAME</th>
-            <th nzAlign="center" class="th-class" nzWidth="100px">TURNOUT_25</th>
-            <th nzAlign="center" class="th-class" nzWidth="80px">ROUND</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">RESULT_25</th>
-            <th nzAlign="center" class="th-class" nzWidth="100px">LL</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('EP_24', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('PAM_EP', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('G50_NORM', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('EP_NORM', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('PEP', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('PP_24', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('COM', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('PAM_PP', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('PP_NORM', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('BC_NORM', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('BC_2', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('BC_1', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('BC_COM', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('LSE24', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('LSE_EP_24', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('LSE_PP_24', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('LSE_BC_24', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('MCD_22', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('VSE20', 'RESULT_25')"></span>
-            </th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">
-              <span [innerHTML]="getDynamicHeaderData('VSE15', 'RESULT_25')"></span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of resultData">
-            <td nzAlign="center">{{ data?.AC_NO }}</td>
-            <td nzAlign="center" class="link-container" (click)="acWiseDetails(data?.AC_NO)">
-              {{ data?.AC_NAME }}
-            </td>
-            <td nzAlign="center">{{ (data?.TURNOUT_25)?.toFixed(2) }}%</td>
-            <td nzAlign="center">{{ data?.ROUND }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.RESULT_25)">{{ data?.RESULT_25 }}</td>
-            <td nzAlign="center" [style]="getPrtyWiseBackround(data?.LL)">{{ data?.LL }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.EP_24)">{{ data?.EP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PAM_EP)">{{ data?.PAM_EP }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.G50_NORM)">{{ data?.G50_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.EP_NORM)">{{ data?.EP_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PEP)">{{ data?.PEP }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PP_24)">{{ data?.PP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.COM)">{{ data?.COM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PAM_PP)">{{ data?.PAM_PP }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PP_NORM)">{{ data?.PP_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_NORM)">{{ data?.BC_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_2)">{{ data?.BC_2 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_1)">{{ data?.BC_1 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_COM)">{{ data?.BC_COM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE24)">{{ data?.LSE24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE_EP_24)">{{ data?.LSE_EP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE_PP_24)">{{ data?.LSE_PP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE_BC_24)">{{ data?.LSE_BC_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.MCD_22)">{{ data?.MCD_22 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.VSE20)">{{ data?.VSE20 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.VSE15)">{{ data?.VSE15 }}</td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </nz-card>
-  </div>
+    <!-- Conclusion Table -->
+    <div class="table-container" *ngIf="conclusion && conclusion?.length > 0">
+      <nz-card nzTitle="Election Results Summary" [nzBordered]="true" class="table-card">
+        <nz-table #basicTable [nzData]="conclusion" [nzShowPagination]="false" class="summary-table">
+          <thead>
+            <tr>
+              <th nzAlign="center" class="th-class">Party</th>
+              <th nzAlign="center" class="th-class">Actual Result</th>
+              <th nzAlign="center" class="th-class">Expected Result</th>
+              <th nzAlign="center" class="th-class">Prediction</th>
+              <th nzAlign="center" class="th-class">Actual Vote Share</th>
+              <th nzAlign="center" class="th-class">Predicted Vote Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of conclusion">
+              <td nzAlign="center">{{ data?.party }}</td>
+              <td nzAlign="center">{{ data?.actualResult }}</td>
+              <td nzAlign="center">{{ data?.actualResult }} / {{ data?.expectedResult }}</td>
+              <td nzAlign="center" [ngClass]="data?.Predection === 'Correct' ? 'correct' : 'incorrect'">
+                {{ data?.Predection }}
+              </td>
+              <td nzAlign="center">{{ data?.actualVoteShare }}%</td>
+              <td nzAlign="center">{{ data?.precVoteShare }}%</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+    </div>
+
+    <!-- Detailed Results Table -->
+    <div class="table-container" *ngIf="resultData && resultData?.length > 0">
+      <nz-card nzTitle="Detailed Constituency Results" [nzBordered]="true" class="table-card">
+        <nz-table #basicTable [nzData]="resultData" [nzShowPagination]="false" [nzScroll]="{ x: '2400px' }"
+          class="detailed-table">
+          <thead>
+            <tr>
+              <th nzAlign="center" class="th-class" nzWidth="80px" rowSpan="2">AC_NO</th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" rowSpan="2">AC_NAME</th>
+              <th nzAlign="center" class="th-class" nzWidth="100px" rowSpan="2">TURNOUT_25</th>
+              <th nzAlign="center" class="th-class" nzWidth="80px" rowSpan="2">ROUND</th>
+      
+              <th nzAlign="center" class="th-class" nzWidth="150px" rowSpan="2">RESULT_25</th>
+      
+              <th nzAlign="center" class="th-class" nzWidth="100px" rowSpan="2">LL</th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >EP_24</th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >PAM_EP</th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >G50_NORM </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >EP_NORM </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >PEP </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >PP_24 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >COM </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >PAM_PP </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >PP_NORM </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >BC_NORM </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >BC_2 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >BC_1 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >BC_COM </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >LSE24 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >LSE_EP_24 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >LSE_PP_24 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >LSE_BC_24 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >MCD_22 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >VSE20 </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px" >VSE15 </th>
+            </tr>
+            <tr>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('EP_24', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('PAM_EP', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('G50_NORM', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('EP_NORM', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('PEP', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('PP_24', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('COM', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('PAM_PP', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('PP_NORM', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('BC_NORM', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('BC_2', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('BC_1', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('BC_COM', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('LSE24', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('LSE_EP_24', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('LSE_PP_24', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('LSE_BC_24', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('MCD_22', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('VSE20', 'RESULT_25')"></span>
+              </th>
+              <th nzAlign="center" class="th-class" nzWidth="150px">
+                <span [innerHTML]="getDynamicHeaderData('VSE15', 'RESULT_25')"></span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of resultData">
+              <td nzAlign="center">{{ data?.AC_NO }}</td>
+              <td nzAlign="center" class="link-container" (click)="acWiseDetails(data?.AC_NO)">
+                {{ data?.AC_NAME }}
+              </td>
+              <td nzAlign="center">{{ (data?.TURNOUT_25)?.toFixed(2) }}%</td>
+              <td nzAlign="center">{{ data?.ROUND }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.RESULT_25)">{{ data?.RESULT_25 }}</td>
+              <td nzAlign="center" [style]="getPrtyWiseBackround(data?.LL)">{{ data?.LL }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.EP_24)">{{ data?.EP_24 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.PAM_EP)">{{ data?.PAM_EP }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.G50_NORM)">{{ data?.G50_NORM }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.EP_NORM)">{{ data?.EP_NORM }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.PEP)">{{ data?.PEP }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.PP_24)">{{ data?.PP_24 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.COM)">{{ data?.COM }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.PAM_PP)">{{ data?.PAM_PP }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.PP_NORM)">{{ data?.PP_NORM }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.BC_NORM)">{{ data?.BC_NORM }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.BC_2)">{{ data?.BC_2 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.BC_1)">{{ data?.BC_1 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.BC_COM)">{{ data?.BC_COM }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.LSE24)">{{ data?.LSE24 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.LSE_EP_24)">{{ data?.LSE_EP_24 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.LSE_PP_24)">{{ data?.LSE_PP_24 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.LSE_BC_24)">{{ data?.LSE_BC_24 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.MCD_22)">{{ data?.MCD_22 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.VSE20)">{{ data?.VSE20 }}</td>
+              <td nzAlign="center" [style]="getStyling(data?.VSE15)">{{ data?.VSE15 }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+    </div>
+
 </div>

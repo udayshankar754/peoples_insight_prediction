@@ -55,6 +55,10 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   selectedStateName: any;
   data = new BehaviorSubject<any>(null);
   private pollingSubscription: any;
+  selectLoader : {
+    state : boolean,
+  } = { state: false };
+  
 
   constructor(
     private liveResultService: LiveResultService,
@@ -66,7 +70,7 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.formData = this.fb.group({
-      state: ['DL', [Validators.required]],
+      state: ['', [Validators.required]],
       electionType: ['', [Validators.required]],
     });
   }
@@ -76,7 +80,10 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getResultData();
+    this.fetchStates();
+    this.formData.get('state')?.valueChanges.subscribe((value: any) => {
+      this.selectedStateName = this.states.find((state: any) => state.value === value);
+       this.getResultData();
     this.getPartyBiColorResult();
     this.getPartyColor();
     this.getPartyVotes();
@@ -87,11 +94,14 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     if (this.isBrowser()) {
       this.getUpdatedData();
     }
+    })
+   
   }
 
   ngOnDestroy(): void {
-    this.pollingSubscription?.unsubscribe();
-    // The stopPolling() method in the service will handle the subject cleanup
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
   }
 
   getResultData() {
@@ -448,22 +458,19 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   }
 
   fetchStates() {
-    // this.httpClient
-    //   .get<any[]>(`${environment.baseUrl}constituency/state`)
-    //   .subscribe(
-    //     (data : any) => {
-    //       this.states = data.map((state : any) => ({
-    //         label: (state?.State_Name)?.replaceAll("_", " "),
-    //         value: state?.State_Name,
-    //       }));
-    //       console.log(this.states);
-    //     },
-    //     (error : any) => {
-    //       console.error('Error fetching states:', error);
-    //       this.messageService.error('Failed to fetch states. Please try again later.');
-    //     }
-    //   );
-    this.states = [{ label: 'Delhi', value: 'DL' }];
+   this.liveResultService.getStateCode().subscribe(
+        (data : any) => {
+          console.log(data);
+          this.states = data.map((state : any) => ({
+            label: state?.state,
+            value: state?.state_code,
+          }));
+        },
+        (error : any) => {
+          console.error('Error fetching states:', error);
+          this.messageService.error('Failed to fetch states. Please try again later.');
+        }
+      );
   }
   onStateChange() {
     this.getResultData();
@@ -498,11 +505,22 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     //   }
     //   this.resultData = data;
     // })
+
+    this.pollingSubscription = this.liveResultService.startPolling(10000).subscribe((response) => {
+      this.getConclusionData();
+
+      this.selectedStateName = {
+        ...this.selectedStateName,
+        reload: true,
+      };
+
+      this.resultData = response;
+    });
   }
 
   receiveData(data: any) {
     // Replace 'any' with the specific data type
-    // this.receivedData = data;/
+    // this.receivedData = data;
     console.log('Received data from child:', data);
   }
 }

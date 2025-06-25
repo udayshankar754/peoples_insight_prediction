@@ -53,15 +53,28 @@ export class LiveResultService {
     return this.http.get(`${environment.baseUrl}result/sheet-wise-prediction/${state_code}`);
   }
 
-  startPolling(interval: number): Observable<any> {
-    return timer(0, interval).pipe(
-      switchMap(() => {
-        return this.getLiveResult();
-      }),
-    );
-  }
+  // startPolling(interval: number): Observable<any> {
+  //   return timer(0, interval).pipe(
+  //     switchMap(() => {
+  //       return this.getLiveResult();
+  //     }),
+  //   );
+  // }
 
   roundWiseReport() {
     return this.http.get(`${environment.baseUrl}result/round-wise-report`);
+  }
+
+  startPolling(intervalMs: number): Observable<any> {
+    return timer(0, intervalMs).pipe(
+      switchMap(() => this.getLiveResult()),
+      takeUntil(this.stopPolling$),
+      shareReplay(1) // Ensures multiple subscribers don't trigger multiple requests
+    );
+  }
+
+  stopPolling(): void {
+    this.stopPolling$.next();
+    this.stopPolling$.complete();
   }
 }

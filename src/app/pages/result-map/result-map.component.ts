@@ -45,7 +45,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
     NzTableModule,
     NzButtonModule,
     RouterLink,
-    NzCardModule
+    NzCardModule,
   ],
   providers: [MapsTooltipService, DataLabelService, ZoomService, LegendService],
   templateUrl: './result-map.component.html',
@@ -105,7 +105,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
   conclusionData: any;
   differenceListData: any;
   allPartyData: any;
-  isVisible : boolean = false;
+  isVisible: boolean = false;
 
   constructor(
     private message: NzMessageService,
@@ -114,7 +114,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
     @Inject(PLATFORM_ID) private platformId: Object,
     private liveResultService: LiveResultService,
     private messageService: NzMessageService,
-    private mapService: MapService
+    private mapService: MapService,
   ) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['stateName']?.currentValue?.reload) {
@@ -185,11 +185,12 @@ export class ResultMapComponent implements OnInit, OnChanges {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch Predicted result');
-      }
+      },
     );
   }
 
   dataforLabel() {
+    // let folderName = ('Delhi')?.toUpperCase();
     let folderName = this.stateName?.state?.toUpperCase();
     folderName = folderName.replace(/[&_]/g, '_');
     folderName = folderName.replace(/_+/g, '_');
@@ -197,40 +198,35 @@ export class ResultMapComponent implements OnInit, OnChanges {
     let fileName = folderName + '_ASSEMBLY.geojson';
     let selected_Data: any = [];
     let selected_Data_2: any = [];
-   
-      
-      this.mapService.getMapData(folderName , fileName).subscribe(
-        (data: any) => {
-          let new_data = data?.features;
-          this.mapData = data?.features;
-          this.crsData = data?.crs;
 
-          new_data.map((feature: any) => {
-            let data = this.predeictionPartyData?.find(
-              (i: any) => i?.AC_NO == feature?.properties?.AC_NO
-            );
-            selected_Data.push({
-              AC_NAME: feature?.properties?.AC_NAME,
-              Party: data?.prediction,
-              AreaColor: this.getColorCodeBi(data?.prediction),
-            });
-            let data2 = this.actualPartyData?.find(
-              (i: any) => i?.AC_NO == feature?.properties?.AC_NO
-            );
+    this.mapService.getMapData(folderName, fileName).subscribe(
+      (data: any) => {
+        let new_data = data?.features;
+        this.mapData = data?.features;
+        this.crsData = data?.crs;
 
-            selected_Data_2.push({
-              AC_NAME: feature?.properties?.AC_NAME,
-              Party: data2?.actual,
-              AreaColor: this.getColorCodeBi(data2?.actual),
-            });
+        new_data.map((feature: any) => {
+          let data = this.predeictionPartyData?.find(
+            (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
+          );
+          selected_Data.push({
+            AC_NAME: feature?.properties?.AC_NAME,
+            Party: data?.prediction,
+            AreaColor: this.getColorCodeBi(data?.prediction),
+          });
+          let data2 = this.actualPartyData?.find(
+            (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
+          );
 
-            const htmlString = `
-              <div><strong>Ac No:</strong> ${
-                feature?.properties?.AC_NO
-              }</div><br/>
-          <div><strong>Ac Name:</strong> ${
-            feature?.properties?.AC_NAME
-          }</div><br/>
+          selected_Data_2.push({
+            AC_NAME: feature?.properties?.AC_NAME,
+            Party: data2?.actual,
+            AreaColor: this.getColorCodeBi(data2?.actual),
+          });
+
+          const htmlString = `
+              <div><strong>Ac No:</strong> ${feature?.properties?.AC_NO}</div><br/>
+          <div><strong>Ac Name:</strong> ${feature?.properties?.AC_NAME}</div><br/>
                     <div><strong>Actual Result:</strong> ${
                       data2?.actual?.split(' ')[0] || ''
                     }</div><br/>         
@@ -244,27 +240,25 @@ export class ResultMapComponent implements OnInit, OnChanges {
           data?.prediction?.split(' ')[1] || ''
         }</div><br/>
       `;
-            feature.properties.SUMMARY = htmlString;
-          });
+          feature.properties.SUMMARY = htmlString;
+        });
 
-          this.selectedColorData = selected_Data;
-          this.selectedColorData_2 = selected_Data_2;
+        this.selectedColorData = selected_Data;
+        this.selectedColorData_2 = selected_Data_2;
 
-          let map_data = {
-            crs: data?.crs,
-            type: 'FeatureCollection',
-            features: new_data,
-          };
-          this.shapeData = map_data;
-        },
-        (error) => {
-          console.error('Error fetching data:', error);
-          this.message.error(
-            'Failed to Load Map data. Please try again later.'
-          );
-          this.shapeData = [];
-        }
-      );
+        let map_data = {
+          crs: data?.crs,
+          type: 'FeatureCollection',
+          features: new_data,
+        };
+        this.shapeData = map_data;
+      },
+      (error) => {
+        console.error('Error fetching data:', error);
+        this.message.error('Failed to Load Map data. Please try again later.');
+        this.shapeData = [];
+      },
+    );
   }
 
   getUpdatedMapColor() {
@@ -293,7 +287,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
 
         new_data.map((feature: any) => {
           let data = this.predeictionPartyData?.find(
-            (i: any) => i?.AC_NO == feature?.properties?.AC_NO
+            (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
           );
           selected_Data.push({
             AC_NAME: feature?.properties?.AC_NAME,
@@ -301,7 +295,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
             AreaColor: this.getColorCodeBi(data?.prediction),
           });
           let data2 = this.actualPartyData?.find(
-            (i: any) => i?.AC_NO == feature?.properties?.AC_NO
+            (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
           );
 
           selected_Data_2.push({
@@ -311,18 +305,12 @@ export class ResultMapComponent implements OnInit, OnChanges {
           });
 
           const htmlString = `
-            <div><strong>Ac No:</strong> ${
-              feature?.properties?.AC_NO
-            }</div><br/>
-        <div><strong>Ac Name:</strong> ${
-          feature?.properties?.AC_NAME
-        }</div><br/>
+            <div><strong>Ac No:</strong> ${feature?.properties?.AC_NO}</div><br/>
+        <div><strong>Ac Name:</strong> ${feature?.properties?.AC_NAME}</div><br/>
                   <div><strong>Actual Result:</strong> ${
                     data2?.actual?.split(' ')[0] || ''
                   }</div><br/>         
-        <div><strong> Predicted Result:</strong> ${
-          data?.prediction?.split(' ')[0] || ''
-        }</div><br/>
+        <div><strong> Predicted Result:</strong> ${data?.prediction?.split(' ')[0] || ''}</div><br/>
          <div><strong>Actual Vote Share:</strong> ${
            data2?.actual?.split(' ')[1] || ''
          }</div><br/>         
@@ -348,7 +336,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch Predicted result');
-      }
+      },
     );
   }
 
@@ -356,8 +344,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
     let colorCode =
       this.partyColorData?.find(
         (partyDataColorList: any) =>
-          partyDataColorList.PARTY?.replace(/[() ]/g, '') ==
-          party?.replace(/[() ]/g, '')
+          partyDataColorList.PARTY?.replace(/[() ]/g, '') == party?.replace(/[() ]/g, ''),
       )?.CODES || null;
     return `${colorCode}`;
   }
@@ -374,38 +361,32 @@ export class ResultMapComponent implements OnInit, OnChanges {
       if (this.partyColorBi) {
         if (winnerPercentage < 5.0) {
           let gradcodes = this.partyColorBi?.filter(
-            (item: any) =>
-              item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '5'
+            (item: any) => item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '5',
           );
           colorCodes = gradcodes[0]?.COLORS;
         } else if (winnerPercentage < 10.0) {
           let gradcodes = this.partyColorBi?.filter(
-            (item: any) =>
-              item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '10'
+            (item: any) => item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '10',
           );
           colorCodes = gradcodes[0]?.COLORS;
         } else if (winnerPercentage < 15.0) {
           let gradcodes = this.partyColorBi?.filter(
-            (item: any) =>
-              item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '15'
+            (item: any) => item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '15',
           );
           colorCodes = gradcodes[0]?.COLORS;
         } else if (winnerPercentage < 20.0) {
           let gradcodes = this.partyColorBi?.filter(
-            (item: any) =>
-              item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '20'
+            (item: any) => item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '20',
           );
           colorCodes = gradcodes[0]?.COLORS;
         } else if (winnerPercentage < 30.0) {
           let gradcodes = this.partyColorBi?.filter(
-            (item: any) =>
-              item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '30'
+            (item: any) => item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == '30',
           );
           colorCodes = gradcodes[0]?.COLORS;
         } else {
           let gradcodes = this.partyColorBi?.filter(
-            (item: any) =>
-              item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == 31
+            (item: any) => item?.PARTY_NAME == winnerParty && item?.WIN_GROUP == 31,
           );
           colorCodes = gradcodes[0]?.COLORS;
         }
@@ -416,6 +397,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
 
     return `${colorCodes}`;
   }
+
   isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
   }
@@ -423,13 +405,13 @@ export class ResultMapComponent implements OnInit, OnChanges {
   removeLabel() {
     if (this.isBrowser()) {
       const banners = document.querySelectorAll(
-        'div[style*="position: fixed"][style*="top: 10px"][style*="left: 10px"]'
+        'div[style*="position: fixed"][style*="top: 10px"][style*="left: 10px"]',
       );
       banners.forEach((banner) => {
         if (
           banner.textContent &&
           banner.textContent.includes(
-            'This application was built using a trial version of Syncfusion Essential Studio'
+            'This application was built using a trial version of Syncfusion Essential Studio',
           )
         ) {
           if (banner.parentNode) {
@@ -439,7 +421,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
       });
 
       const overlay = document.querySelector(
-        'div[style*="position: fixed"][style*="top: 0"][style*="left: 0"][style*="right: 0"][style*="bottom: 0"][style*="background-color: rgba(0, 0, 0, 0.5)"]'
+        'div[style*="position: fixed"][style*="top: 0"][style*="left: 0"][style*="right: 0"][style*="bottom: 0"][style*="background-color: rgba(0, 0, 0, 0.5)"]',
       );
       if (overlay && overlay.parentNode) {
         this.renderer.removeChild(overlay.parentNode, overlay);
@@ -456,7 +438,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch party  color result');
-      }
+      },
     );
   }
 
@@ -469,12 +451,12 @@ export class ResultMapComponent implements OnInit, OnChanges {
       (err: any) => {
         console.error(err);
         this.messageService.error('Failed to fetch party bi result');
-      }
+      },
     );
   }
 
   onSelectedOptionChange(event: any) {
-    console.log(event);
+    // console.log(event);
     this.shapeData = null;
     this.conclusionData = null;
     this.getUpdatedMapColor();
@@ -486,18 +468,16 @@ export class ResultMapComponent implements OnInit, OnChanges {
     let allParty = [
       ...new Set([
         ...this.actualPartyData.map((i: any) => i?.actual?.split(' ')[0]),
-        ...this.predeictionPartyData.map(
-          (i: any) => i?.prediction?.split(' ')[0]
-        ),
+        ...this.predeictionPartyData.map((i: any) => i?.prediction?.split(' ')[0]),
       ]),
     ];
-    this.allPartyData = allParty
+    this.allPartyData = allParty;
     let allConclusion = allParty?.map((party: any) => {
       let actual = this.actualPartyData?.filter(
-        (i: any) => i?.actual?.split(' ')[0] == party
+        (i: any) => i?.actual?.split(' ')[0] == party,
       )?.length;
       let prediction = this.predeictionPartyData?.filter(
-        (i: any) => i?.prediction?.split(' ')[0] == party
+        (i: any) => i?.prediction?.split(' ')[0] == party,
       )?.length;
       let difference = actual - prediction;
       return {
@@ -508,29 +488,27 @@ export class ResultMapComponent implements OnInit, OnChanges {
       };
     });
     this.conclusionData = allConclusion;
-   
-    
 
-    let differenceConclusion = this.actualPartyData.map((i : any )=> {
-      let da = this.predeictionPartyData.find((j : any) => j.AC_NO == i.AC_NO )
-      
-      if(da?.prediction?.split(' ')[0] != i?.actual?.split(' ')[0]) {
+    let differenceConclusion = this.actualPartyData
+      .map((i: any) => {
+        let da = this.predeictionPartyData.find((j: any) => j.AC_NO == i.AC_NO);
+
+        if (da?.prediction?.split(' ')[0] != i?.actual?.split(' ')[0]) {
           return {
-              ...da ,
-              prediction : da?.prediction?.split(' ')[0],
-              actual : i?.actual?.split(' ')[0]
-          }
-      }
-        
-    return null
-    }).filter((i : any) => i!= null)
+            ...da,
+            prediction: da?.prediction?.split(' ')[0],
+            actual: i?.actual?.split(' ')[0],
+          };
+        }
 
-  
+        return null;
+      })
+      .filter((i: any) => i != null);
+
     this.differenceListData = differenceConclusion;
   }
 
-
   toggleDifference() {
-    this.isVisible = !this.isVisible
+    this.isVisible = !this.isVisible;
   }
 }
