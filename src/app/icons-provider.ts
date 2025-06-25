@@ -6,6 +6,10 @@ import {
   ReloadOutline,
   SwapOutline,
   FundProjectionScreenOutline,
+  UploadOutline,
+  SaveOutline,
+  InboxOutline,
+  DownloadOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
@@ -16,4 +20,8 @@ export const icons = [
   ReloadOutline,
   SwapOutline,
   FundProjectionScreenOutline,
+  UploadOutline,
+  SaveOutline,
+  InboxOutline,
+  DownloadOutline
 ];
