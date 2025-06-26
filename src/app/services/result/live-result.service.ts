@@ -68,8 +68,12 @@ export class LiveResultService {
   //   );
   // }
 
-  roundWiseReport() {
-    return this.http.get(`${environment.baseUrl}result/round-wise-report`);
+  roundWiseReport(state : string | null , state_code : string | null) {
+      let params = new HttpParams();
+  
+      if (state) params = params.set('state', state);
+      if (state_code) params = params.set('state_code', state_code);
+    return this.http.get(`${environment.baseUrl}result/round-wise-report` , { params });
   }
 
   startPolling(intervalMs: number , state : string , state_code : string): Observable<any> {

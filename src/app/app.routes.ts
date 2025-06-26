@@ -26,7 +26,7 @@ export const routes: Routes = [
     component: RoundwiseResultComponent,
   },
   {
-    path: 'roundwise-result-analysis',
+    path: 'roundwise-result-analysis/:state/:state_code',
     component: RoundwiseAnalysisComponent,
   },
 ];

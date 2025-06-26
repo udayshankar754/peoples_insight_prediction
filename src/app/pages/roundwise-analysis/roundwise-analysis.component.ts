@@ -8,12 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { LiveResultService } from '../../services/result/live-result.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-roundwise-analysis',
   standalone: true,
   imports: [NzTableModule, CommonModule, NzSelectModule, FormsModule, NzCardModule, NzSpinModule],
   templateUrl: './roundwise-analysis.component.html',
   styleUrl: './roundwise-analysis.component.scss',
+  host: { ngSkipHydration: 'true' },
 })
 export class RoundwiseAnalysisComponent implements OnInit {
   resultData: any;
@@ -43,20 +45,37 @@ export class RoundwiseAnalysisComponent implements OnInit {
     { label: 'VSE15', value: 'VSE15' },
   ];
   isLoading: boolean = false;
+  paramsData: {
+    state: string | null;
+    state_code: string | null;
+  } = {
+    state: null,
+    state_code: null,
+  };
 
   constructor(
     private liveResultService: LiveResultService,
     private messageService: NzMessageService,
     private sanitizer: DomSanitizer,
+    private activeRoute: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
+    this.activeRoute.paramMap.subscribe((params) => {
+      this.paramsData.state = params.get('state');
+      this.paramsData.state_code = params.get('state_code');
+    });
     this.getPartyBiColorResult();
+
   }
 
   roundWiseData() {
-    this.liveResultService.roundWiseReport().subscribe(
+    // this.selectedStateName = {
+    //   state: state?.label,
+    //   state_code: state?.value,
+    // };
+    this.liveResultService.roundWiseReport(this.paramsData.state , this.paramsData.state_code).subscribe(
       (res: any) => {
         // console.log(res);
         this.resultData = res;
