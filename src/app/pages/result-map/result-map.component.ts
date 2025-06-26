@@ -32,6 +32,7 @@ import { RouterLink } from '@angular/router';
 import { LiveResultService } from '../../services/result/live-result.service';
 import { MapService } from '../../services/map/map.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { ConfiguratorService } from '../../services/configurator/configurator.service';
 
 @Component({
   selector: 'app-result-map',
@@ -56,30 +57,9 @@ export class ResultMapComponent implements OnInit, OnChanges {
   @Output() dataEvent = new EventEmitter<any>();
   // stateName: any = { state: 'Delhi', state_code: 'DL', reload: true };
 
-  optionData: any = [
-    { label: 'EP_24', value: 'EP_24' },
-    { label: 'PAM_EP', value: 'PAM_EP' },
-    { label: 'G50_NORM', value: 'G50_NORM' },
-    { label: 'EP_NORM', value: 'EP_NORM' },
-    { label: 'PEP', value: 'PEP' },
-    { label: 'PP_24', value: 'PP_24' },
-    { label: 'COM', value: 'COM' },
-    { label: 'PAM_PP', value: 'PAM_PP' },
-    { label: 'PP_NORM', value: 'PP_NORM' },
-    { label: 'BC_NORM', value: 'BC_NORM' },
-    { label: 'BC_2', value: 'BC_2' },
-    { label: 'BC_1', value: 'BC_1' },
-    { label: 'BC_COM', value: 'BC_COM' },
-    { label: 'LSE24', value: 'LSE24' },
-    { label: 'LSE_EP_24', value: 'LSE_EP_24' },
-    { label: 'LSE_PP_24', value: 'LSE_PP_24' },
-    { label: 'LSE_BC_24', value: 'LSE_BC_24' },
-    { label: 'MCD_22', value: 'MCD_22' },
-    { label: 'VSE20', value: 'VSE20' },
-    { label: 'VSE15', value: 'VSE15' },
-  ];
+  resultOptionData: any = [];
 
-  selectedOption: any = 'EP_24';
+  selectedOption: any;
 
   partyColorData: any;
   partyColorBi: any;
@@ -107,6 +87,12 @@ export class ResultMapComponent implements OnInit, OnChanges {
   allPartyData: any;
   isVisible: boolean = false;
 
+  loader: {
+    resultOption: boolean;
+  } = {
+    resultOption: false,
+  };
+
   constructor(
     private message: NzMessageService,
     private renderer: Renderer2,
@@ -115,6 +101,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
     private liveResultService: LiveResultService,
     private messageService: NzMessageService,
     private mapService: MapService,
+    private configuationService: ConfiguratorService,
   ) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['stateName']?.currentValue?.reload) {
@@ -123,6 +110,7 @@ export class ResultMapComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.getResultOptions();
     this.getPartyColor();
 
     this.shapeSettings = {
@@ -159,34 +147,56 @@ export class ResultMapComponent implements OnInit, OnChanges {
       },
     };
   }
-
-  resultData() {
-    this.liveResultService.getLiveResult(this.stateName?.state , this.stateName?.state_code).subscribe(
-      (res: any) => {
-        this.actualPartyData = res?.map((i: any) => {
-          return {
-            AC_NO: i.AC_NO,
-            AC_NAME: i.AC_NAME,
-            actual: i?.RESULT_25,
-          };
-        });
-
-        this.predeictionPartyData = res?.map((i: any) => {
-          return {
-            AC_NO: i.AC_NO,
-            AC_NAME: i.AC_NAME,
-            prediction: i?.[this.selectedOption],
-          };
-        });
-
-        this.dataforLabel();
-        this.getConclusionData();
+  getResultOptions() {
+    this.loader.resultOption = true;
+    this.configuationService.getBiKeys(this.stateName?.state).subscribe(
+      (data: any) => {
+        this.resultOptionData = data
+          ?.filter((i: any) => i?.IsResult)
+          ?.map((i: any) => ({
+            label: i?.Field?.toUpperCase(),
+            value: i?.Field,
+          }));
+        this.selectedOption = this.resultOptionData[0].value;
+        this.loader.resultOption = false;
       },
-      (err: any) => {
-        console.error(err);
-        this.messageService.error('Failed to fetch Predicted result');
+      (error: any) => {
+        this.loader.resultOption = false;
+        console.error('Error fetching Bi keys:', error);
+        this.messageService.error('Failed to fetch Bi keys. Please try again later.');
       },
     );
+  }
+
+  resultData() {
+    this.liveResultService
+      .getLiveResult(this.stateName?.state, this.stateName?.state_code)
+      .subscribe(
+        (res: any) => {
+          this.actualPartyData = res?.map((i: any) => {
+            return {
+              AC_NO: i.AC_NO,
+              AC_NAME: i.AC_NAME,
+              actual: i?.RESULT_25,
+            };
+          });
+
+          this.predeictionPartyData = res?.map((i: any) => {
+            return {
+              AC_NO: i.AC_NO,
+              AC_NAME: i.AC_NAME,
+              prediction: i?.[this.selectedOption],
+            };
+          });
+
+          this.dataforLabel();
+          this.getConclusionData();
+        },
+        (err: any) => {
+          console.error(err);
+          this.messageService.error('Failed to fetch Predicted result');
+        },
+      );
   }
 
   dataforLabel() {
@@ -261,49 +271,51 @@ export class ResultMapComponent implements OnInit, OnChanges {
   }
 
   getUpdatedMapColor() {
-    this.liveResultService.getLiveResult(this.stateName?.state , this.stateName?.state_code).subscribe(
-      (res: any) => {
-        this.actualPartyData = res?.map((i: any) => {
-          return {
-            AC_NO: i.AC_NO,
-            AC_NAME: i.AC_NAME,
-            actual: i?.RESULT_25,
-          };
-        });
-
-        this.predeictionPartyData = res?.map((i: any) => {
-          return {
-            AC_NO: i.AC_NO,
-            AC_NAME: i.AC_NAME,
-            prediction: i?.[this.selectedOption],
-          };
-        });
-
-        let selected_Data: any = [];
-        let selected_Data_2: any = [];
-
-        let new_data = this.mapData;
-
-        new_data.map((feature: any) => {
-          let data = this.predeictionPartyData?.find(
-            (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
-          );
-          selected_Data.push({
-            AC_NAME: feature?.properties?.AC_NAME,
-            Party: data?.prediction,
-            AreaColor: this.getColorCodeBi(data?.prediction),
-          });
-          let data2 = this.actualPartyData?.find(
-            (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
-          );
-
-          selected_Data_2.push({
-            AC_NAME: feature?.properties?.AC_NAME,
-            Party: data2?.actual,
-            AreaColor: this.getColorCodeBi(data2?.actual),
+    this.liveResultService
+      .getLiveResult(this.stateName?.state, this.stateName?.state_code)
+      .subscribe(
+        (res: any) => {
+          this.actualPartyData = res?.map((i: any) => {
+            return {
+              AC_NO: i.AC_NO,
+              AC_NAME: i.AC_NAME,
+              actual: i?.RESULT_25,
+            };
           });
 
-          const htmlString = `
+          this.predeictionPartyData = res?.map((i: any) => {
+            return {
+              AC_NO: i.AC_NO,
+              AC_NAME: i.AC_NAME,
+              prediction: i?.[this.selectedOption],
+            };
+          });
+
+          let selected_Data: any = [];
+          let selected_Data_2: any = [];
+
+          let new_data = this.mapData;
+
+          new_data.map((feature: any) => {
+            let data = this.predeictionPartyData?.find(
+              (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
+            );
+            selected_Data.push({
+              AC_NAME: feature?.properties?.AC_NAME,
+              Party: data?.prediction,
+              AreaColor: this.getColorCodeBi(data?.prediction),
+            });
+            let data2 = this.actualPartyData?.find(
+              (i: any) => i?.AC_NO == feature?.properties?.AC_NO,
+            );
+
+            selected_Data_2.push({
+              AC_NAME: feature?.properties?.AC_NAME,
+              Party: data2?.actual,
+              AreaColor: this.getColorCodeBi(data2?.actual),
+            });
+
+            const htmlString = `
             <div><strong>Ac No:</strong> ${feature?.properties?.AC_NO}</div><br/>
         <div><strong>Ac Name:</strong> ${feature?.properties?.AC_NAME}</div><br/>
                   <div><strong>Actual Result:</strong> ${
@@ -317,26 +329,26 @@ export class ResultMapComponent implements OnInit, OnChanges {
           data?.prediction?.split(' ')[1] || ''
         }</div><br/>
     `;
-          feature.properties.SUMMARY = htmlString;
-        });
+            feature.properties.SUMMARY = htmlString;
+          });
 
-        this.selectedColorData = selected_Data;
-        this.selectedColorData_2 = selected_Data_2;
+          this.selectedColorData = selected_Data;
+          this.selectedColorData_2 = selected_Data_2;
 
-        let map_data = {
-          crs: this.crsData,
-          type: 'FeatureCollection',
-          features: new_data,
-        };
-        this.shapeData = map_data;
+          let map_data = {
+            crs: this.crsData,
+            type: 'FeatureCollection',
+            features: new_data,
+          };
+          this.shapeData = map_data;
 
-        this.getConclusionData();
-      },
-      (err: any) => {
-        console.error(err);
-        this.messageService.error('Failed to fetch Predicted result');
-      },
-    );
+          this.getConclusionData();
+        },
+        (err: any) => {
+          console.error(err);
+          this.messageService.error('Failed to fetch Predicted result');
+        },
+      );
   }
 
   getColorCode(party: string): string {

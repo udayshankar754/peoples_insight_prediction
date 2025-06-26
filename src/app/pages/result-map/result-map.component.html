@@ -4,7 +4,7 @@
     <div class="header-actions">
       <nz-select [(ngModel)]="selectedOption" (ngModelChange)="onSelectedOptionChange($event)"
         nzPlaceHolder="Select Option" class="select-option">
-        <nz-option *ngFor="let item of optionData" [nzValue]="item?.value" [nzLabel]="item?.label"></nz-option>
+        <nz-option *ngFor="let item of resultOptionData" [nzValue]="item?.value" [nzLabel]="item?.label"></nz-option>
       </nz-select>
       <button nz-button nzType="primary" nzShape="round" (click)="toggleDifference()"
         [ngClass]="isVisible && differenceListData ? 'action-btn-performed' : 'action-btn'">
