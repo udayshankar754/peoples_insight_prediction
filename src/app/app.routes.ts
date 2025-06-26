@@ -4,6 +4,7 @@ import { LiveResultComponent } from './pages/live-result/live-result.component';
 import { RoundwiseAnalysisComponent } from './pages/roundwise-analysis/roundwise-analysis.component';
 import { RoundwiseResultComponent } from './pages/roundwise-result/roundwise-result.component';
 import {DataConfigComponent} from './pages/configurator/data-config/data-config.component';
+import { KeysCongiguratorComponent } from './pages/configurator/keys-congigurator/keys-congigurator.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
@@ -14,6 +15,10 @@ export const routes: Routes = [
       {
         path: 'data-config',
         component : DataConfigComponent,
+      },
+      {
+        path: 'key-config',
+        component : KeysCongiguratorComponent,
       },
     ],
   },

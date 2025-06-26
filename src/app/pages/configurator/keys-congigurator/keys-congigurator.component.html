@@ -1,0 +1,60 @@
+<div class="page-container">
+  <div class="header-section">
+    <h2 class="heading-h2">Upload Election Data</h2>
+  </div>
+
+  <nz-card nzTitle="Upload CSV or Excel File" [nzBordered]="true" class="upload-card">
+    <form [formGroup]="keysConfigForm" class="upload-form">
+      <div class="form-group">
+        <label class="form-label">State</label>
+        <nz-select nzShowSearch formControlName="state" nzAllowClear nzPlaceHolder="Select a State"
+          [nzLoading]="selectLoader.state" class="select-state">
+          <nz-option *ngFor="let type of stateList" [nzLabel]="type?.label" [nzValue]="type?.value"></nz-option>
+        </nz-select>
+      </div>
+
+
+      <button nz-button nzType="primary" nzShape="round" (click)="submit()" class="save-btn"
+        [disabled]="keysConfigForm.get('state')?.value == ''" [nzLoading]="selectLoader.submit">
+        <i nz-icon nzType="save"></i> Submit
+      </button>
+
+      <button nz-button nzType="primary" nzShape="round" (click)="updateKeys()" class="save-btn"
+        [disabled]="keysTableData?.length == 0" [nzLoading]="selectLoader.updateVisiblity">
+        <i nz-icon nzType="save"></i> Update Keys
+      </button>
+
+    </form>
+  </nz-card>
+
+  <div class="table-container" *ngIf="keysTableData?.length > 0">
+    <nz-card nzTitle="Preview Data" [nzBordered]="true" class="table-card">
+      <nz-table #basicTable [nzData]="keysTableData" [nzShowPagination]="keysTableData?.length > 10" [nzPageSize]="10"
+        class="preview-table">
+        <thead>
+          <tr>
+            <th nzAlign="center" class="th-class">Field</th>
+            <th nzAlign="center" class="th-class">Is Visible</th>
+            <th nzAlign="center" class="th-class">Is Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of basicTable.data">
+            <td nzAlign="center">{{ row?.Field }}</td>
+            <td nzAlign="center">
+              <nz-switch [(ngModel)]="row.IsVisible" [name]="'isVisible' + row.Id">
+              </nz-switch>
+
+            </td>
+            <td nzAlign="center">
+              <nz-switch [(ngModel)]="row.IsResult" [name]="'isResult' + row.Id">
+              </nz-switch>
+
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+    </nz-card>
+  </div>
+</div>

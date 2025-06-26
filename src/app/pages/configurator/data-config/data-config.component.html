@@ -22,7 +22,7 @@
           [nzFileList]="fileList"
           (nzChange)="onFileChange($event)"
           class="upload-area"
-          [nzDisabled]="dataConfigForm?.get('state')?.value === ''"
+          [nzDisabled]="dataConfigForm.get('state')?.value === ''"
         >
           <p class="ant-upload-drag-icon">
             <i nz-icon nzType="inbox"></i>
