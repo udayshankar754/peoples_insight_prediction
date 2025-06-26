@@ -23,6 +23,7 @@ import { BehaviorSubject } from 'rxjs';
 import { LiveResultService } from '../../services/result/live-result.service';
 import { ResultMapComponent } from '../result-map/result-map.component';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { ConfiguratorService } from '../../services/configurator/configurator.service';
 @Component({
   selector: 'app-live-result',
   standalone: true,
@@ -58,6 +59,8 @@ export class LiveResultComponent implements OnInit, OnDestroy {
   selectLoader: {
     state: boolean;
   } = { state: false };
+  resultOptionData: any = [];
+  visibleOptionData: any = [];
 
   constructor(
     private liveResultService: LiveResultService,
@@ -67,6 +70,7 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     private router: Router,
     private renderer: Renderer2,
     @Inject(PLATFORM_ID) private platformId: Object,
+    private configuationService: ConfiguratorService,
   ) {
     this.formData = this.fb.group({
       state: ['', [Validators.required]],
@@ -86,6 +90,7 @@ export class LiveResultComponent implements OnInit, OnDestroy {
         state: state?.label,
         state_code: state?.value,
       };
+      this.getResultOptions();
       this.getResultData();
       this.getPartyBiColorResult();
       this.getPartyColor();
@@ -100,6 +105,40 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
+  }
+
+  getResultOptions() {
+    const state = this.states.find(
+      (state: any) => state.value === this.formData.get('state')?.value,
+    )?.label;
+    this.configuationService.getBiKeys(state).subscribe(
+      (data: any) => {
+        this.resultOptionData = data
+          ?.filter((i: any) => i?.IsResult)
+          ?.map((i: any) => ({
+            label: i?.Field?.toUpperCase(),
+            value: i?.Field,
+          }));
+
+        // Get list of fields already in resultOptionData
+        const resultFields = new Set(this.resultOptionData.map((item: any) => item.value?.toLowerCase()));
+        resultFields.add('ac_no');
+        resultFields.add('ac_name');
+        resultFields.add('ll');
+
+        // Filter out those fields from visibleOptionData
+        this.visibleOptionData = data
+          ?.filter((i: any) => i?.IsVisible && !resultFields.has(i?.Field?.toLowerCase()))
+          ?.map((i: any) => ({
+            label: i?.Field?.toUpperCase(),
+            value: i?.Field,
+          }));
+      },
+      (error: any) => {
+        console.error('Error fetching Bi keys:', error);
+        this.messageService.error('Failed to fetch Bi keys. Please try again later.');
+      },
+    );
   }
 
   getResultData() {
@@ -307,23 +346,17 @@ export class LiveResultComponent implements OnInit, OnDestroy {
 
     let totalVotes = 0;
     this.partyVote?.forEach((votes: any) => (totalVotes += votes?.VOTES));
-    
 
     let bjpActualVoteShare = `${(
-      ((this.partyVote?.find((party: any) => party.party == 'BJP')?.VOTES ||
-        0) /
-        totalVotes) *
+      ((this.partyVote?.find((party: any) => party.party == 'BJP')?.VOTES || 0) / totalVotes) *
       100
     )?.toFixed(2)}`;
     let aapActualVoteShare = `${(
-      ((this.partyVote?.find((party: any) => party.party == 'AAP')?.VOTES || 0) /
-        totalVotes) *
+      ((this.partyVote?.find((party: any) => party.party == 'AAP')?.VOTES || 0) / totalVotes) *
       100
     )?.toFixed(2)}`;
     let incActualVoteShare = `${(
-      ((this.partyVote?.find((party: any) => party.party === 'INC')?.VOTES ||
-        0) /
-        totalVotes) *
+      ((this.partyVote?.find((party: any) => party.party === 'INC')?.VOTES || 0) / totalVotes) *
       100
     )?.toFixed(2)}`;
 
@@ -333,11 +366,7 @@ export class LiveResultComponent implements OnInit, OnDestroy {
     let othervotes = 0;
 
     this.partyVote?.map((party: any) => {
-      if (
-        party.party !== 'BJP' &&
-        party.party !== 'AAP' &&
-        party.party !== 'INC'
-      ) {
+      if (party.party !== 'BJP' && party.party !== 'AAP' && party.party !== 'INC') {
         othervotes += party?.VOTES;
       }
     });

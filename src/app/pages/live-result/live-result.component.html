@@ -131,32 +131,15 @@
           <tr>
             <th nzAlign="center" class="th-class" nzWidth="80px" rowSpan="2">AC_NO</th>
             <th nzAlign="center" class="th-class" nzWidth="150px" rowSpan="2">AC_NAME</th>
-            <th nzAlign="center" class="th-class" nzWidth="100px" rowSpan="2">TURNOUT_25</th>
             <th nzAlign="center" class="th-class" nzWidth="80px" rowSpan="2">ROUND</th>
-
             <th nzAlign="center" class="th-class" nzWidth="150px" rowSpan="2">RESULT_25</th>
-
             <th nzAlign="center" class="th-class" nzWidth="100px" rowSpan="2">LL</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">EP_24</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">PAM_EP</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">G50_NORM</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">EP_NORM</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">PEP</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">PP_24</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">COM</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">PAM_PP</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">PP_NORM</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">BC_NORM</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">BC_2</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">BC_1</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">BC_COM</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">LSE24</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">LSE_EP_24</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">LSE_PP_24</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">LSE_BC_24</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">MCD_22</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">VSE20</th>
-            <th nzAlign="center" class="th-class" nzWidth="150px">VSE15</th>
+
+            <th nzAlign="center" class="th-class" nzWidth="100px" rowSpan="2" *ngFor="let item of visibleOptionData">{{item?.label}}</th>
+           
+
+            <th nzAlign="center" class="th-class" nzWidth="150px" *ngFor="let item of resultOptionData">{{item?.label}}</th>
+         
           </tr>
           <tr>
             <th nzAlign="center" class="th-class" nzWidth="150px">
@@ -227,30 +210,14 @@
             <td nzAlign="center" class="link-container" (click)="acWiseDetails(data?.AC_NO)">
               {{ data?.AC_NAME }}
             </td>
-            <td nzAlign="center">{{ data?.TURNOUT_25?.toFixed(2) }}%</td>
             <td nzAlign="center">{{ data?.ROUND }}</td>
             <td nzAlign="center" [style]="getStyling(data?.RESULT_25)">{{ data?.RESULT_25 }}</td>
             <td nzAlign="center" [style]="getPrtyWiseBackround(data?.LL)">{{ data?.LL }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.EP_24)">{{ data?.EP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PAM_EP)">{{ data?.PAM_EP }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.G50_NORM)">{{ data?.G50_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.EP_NORM)">{{ data?.EP_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PEP)">{{ data?.PEP }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PP_24)">{{ data?.PP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.COM)">{{ data?.COM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PAM_PP)">{{ data?.PAM_PP }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.PP_NORM)">{{ data?.PP_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_NORM)">{{ data?.BC_NORM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_2)">{{ data?.BC_2 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_1)">{{ data?.BC_1 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.BC_COM)">{{ data?.BC_COM }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE24)">{{ data?.LSE24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE_EP_24)">{{ data?.LSE_EP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE_PP_24)">{{ data?.LSE_PP_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.LSE_BC_24)">{{ data?.LSE_BC_24 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.MCD_22)">{{ data?.MCD_22 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.VSE20)">{{ data?.VSE20 }}</td>
-            <td nzAlign="center" [style]="getStyling(data?.VSE15)">{{ data?.VSE15 }}</td>
+
+
+            <td nzAlign="center" *ngFor="let item of visibleOptionData">{{ data?.[item?.value] }}</td>
+            <td nzAlign="center" [style]="getStyling(data?.[item?.value])" *ngFor="let item of resultOptionData">{{ data?.[item?.value] }}</td>
+           
           </tr>
         </tbody>
       </nz-table>
