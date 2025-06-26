@@ -42,14 +42,14 @@
           <tr *ngFor="let row of basicTable.data">
             <td nzAlign="center">{{ row?.Field }}</td>
             <td nzAlign="center">
-              <nz-switch [(ngModel)]="row.IsVisible" [name]="'isVisible' + row.Id">
+              <nz-switch [(ngModel)]="row.IsVisible" [name]="'isVisible' + row.Id"
+                (ngModelChange)="onVisibleChange(row)">
               </nz-switch>
-
             </td>
-            <td nzAlign="center">
-              <nz-switch [(ngModel)]="row.IsResult" [name]="'isResult' + row.Id">
-              </nz-switch>
 
+            <td nzAlign="center">
+              <nz-switch [(ngModel)]="row.IsResult" [name]="'isResult' + row.Id" [disabled]="!row.IsVisible">
+              </nz-switch>
             </td>
           </tr>
         </tbody>

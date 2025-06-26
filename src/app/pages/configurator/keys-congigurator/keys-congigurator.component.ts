@@ -97,6 +97,13 @@ export class KeysCongiguratorComponent implements OnInit {
     );
   }
 
+  onVisibleChange(row: any): void {
+    if (!row.IsVisible) {
+      row.IsResult = false; // Automatically turn off IsResult
+    }
+  }
+  
+
   updateKeys() {
     this.selectLoader.updateVisiblity = true;
     const updatedData = this.keysTableData.map((row: any) => ({
