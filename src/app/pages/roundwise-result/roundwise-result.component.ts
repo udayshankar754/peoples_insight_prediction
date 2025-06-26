@@ -71,11 +71,12 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
       (res: any) => {
         if (res && res?.length > 0) {
           let validState = res?.find(
-            (i: any) => i?.State_Code?.toLowerCase() == this.state_code?.toLowerCase(),
+            (i: any) => i?.state_code?.toLowerCase() == this.state_code?.toLowerCase(),
           );
+          console.log(this.state_code , res , validState);
 
           if (validState) {
-            this.acListStateWise(validState?.State_Code);
+            this.acListStateWise(validState?.state_code);
           } else {
             this.messageService.error('Invalid State Code');
           }
@@ -167,7 +168,7 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
                 ...i,
                 round_wise_vote_share: `${((Number(i?.votes) / Number(totalVotes)) * 100)?.toFixed(
                   2,
-                )} %`,
+                )}`,
               };
             });
 
@@ -206,7 +207,7 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
                     round_wise_vote_share: `${(
                       (Number(i?.votes) / Number(totalVotes)) *
                       100
-                    )?.toFixed(2)} %`,
+                    )?.toFixed(2)}`,
                   };
                 });
 
