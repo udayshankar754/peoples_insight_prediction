@@ -130,6 +130,11 @@ export class DataConfigComponent implements OnInit {
               this.fileError = true;
               // Optional: Set file status to 'error'
               event.file.status = 'error';
+            } else if (!(Object.keys(firstRow)?.map((i: any) => i?.toLowerCase())?.includes('ll'))) {
+              this.messageService.create('error', 'LL column is required');
+              this.fileError = true;
+              // Optional: Set file status to 'error'
+              event.file.status = 'error';
             }
           }
         })
