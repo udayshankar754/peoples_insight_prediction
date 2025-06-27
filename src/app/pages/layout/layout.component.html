@@ -1,0 +1,85 @@
+<nz-layout class="app-layout">
+  <nz-sider
+    class="menu-sidebar"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <div class="sidebar-logo">
+      <ng-container *ngIf="isCollapsed; else expandedLogo">
+        <a href="https://www.peoplesinsight.in/" target="_blank">
+          <img src="./logo/logo-collapse.png" alt="logo" class="collapsed-logo" />
+        </a>
+      </ng-container>
+
+      <ng-template #expandedLogo>
+        <a href="https://www.peoplesinsight.in/" target="_blank">
+          <img src="./logo/logo-dark.webp" alt="logo" />
+        </a>
+      </ng-template>
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li
+        nz-submenu
+        nzTitle="Dashboard"
+        nzIcon="dashboard"
+        [(nzOpen)]="openMap['dashboard']"
+        (nzOpenChange)="openHandler('dashboard')"
+      >
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/home/key-config">Key Configuration</a>
+          </li>
+        </ul>
+      </li>
+      <li
+      nz-submenu
+      nzTitle="Power Bi Upload"
+      nzIcon="database"
+      [(nzOpen)]="openMap['powerBi']"
+      (nzOpenChange)="openHandler('powerBi')"
+    >
+      <ul>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/home/bi-result">BI Result Upload</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/home/bi-round-wise-result">BI Round Wise Result Upload</a>
+        </li>
+      </ul>
+    </li>
+      <li
+        nz-submenu
+        nzTitle="Result"
+        nzIcon="fund-projection-screen"
+        [(nzOpen)]="openMap['result']"
+        (nzOpenChange)="openHandler('result')"
+      >
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/live-result" target="_blank">Live Result</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/roundwise-prediction" target="_blank">Round Wise Prediction</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+          <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" />
+        </span>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
