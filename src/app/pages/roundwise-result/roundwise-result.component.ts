@@ -160,18 +160,22 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
     if (round_no) {
       this.liveResultService.roundwiseResult(state_code, ac_no, round_no).subscribe(
         (res: any) => {
+          console.log(res);
           if (res && res?.length > 0) {
             let totalVotes = 0;
-            res?.forEach((element: any) => (totalVotes += element?.votes));
+            let prev_round_votes = 0;
+            res?.forEach((element: any) => {totalVotes += element?.votes; prev_round_votes += element?.prevRoundVotes});
+            const current_round_votes = totalVotes - prev_round_votes;
             this.result = res?.map((i: any) => {
+              const curRoundVotes = Number(i?.votes) - Number(i?.prevRoundVotes || 0);
               return {
                 ...i,
-                round_wise_vote_share: `${((Number(i?.votes) / Number(totalVotes)) * 100)?.toFixed(
-                  2,
-                )}`,
+                round_wise_vote_share: `${((Number(i?.votes) / Number(totalVotes)) * 100).toFixed(2)}`,
+                cur_round_votes: curRoundVotes,
+                round_wise_cur_round__vote_share: `${((curRoundVotes / Number(current_round_votes)) * 100).toFixed(2)}`,
               };
             });
-
+            
             this.dataSource = this.result?.map((i: any) => {
               return {
                 x: i?.party_alice,
@@ -278,5 +282,11 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
     this.router.navigate(['/roundwise-result', this.state_code, this.ac_no], {
       queryParams: { round: round },
     });
+  }
+
+  getTotalVotes(data : any , key : string) {
+    let totalVotes = 0
+    data?.forEach((i: any) => totalVotes += Number(i?.[key] || 0))
+    return totalVotes;    
   }
 }
