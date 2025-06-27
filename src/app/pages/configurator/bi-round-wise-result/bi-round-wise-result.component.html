@@ -1,1 +1,59 @@
-<p>bi-round-wise-result works!</p>
+<div class="page-container">
+  <div class="header-section">
+    <h2 class="heading-h2">Upload BI Round Wise Election Data</h2>
+  </div>
+
+  <nz-card nzTitle="Upload CSV or Excel File" [nzBordered]="true" class="upload-card">
+    <form [formGroup]="dataConfigForm" class="upload-form">
+      <div class="form-group" *ngIf="stateList?.length > 0">
+        <label class="form-label">State</label>
+        <nz-select nzShowSearch formControlName="state" nzAllowClear nzPlaceHolder="Select a State"
+          [nzLoading]="selectLoader.state" class="select-state">
+          <nz-option *ngFor="let type of stateList" [nzLabel]="type?.label" [nzValue]="type?.value"></nz-option>
+        </nz-select>
+      </div>
+     
+      <div class="form-group">
+        <label class="form-label">Upload File</label>
+        <nz-upload
+          nzType="drag"
+          [nzAccept]="'.csv,.xlsx,.xls'"
+          [nzShowUploadList]="true"
+          [nzFileList]="fileList"
+          (nzChange)="onFileChange($event)"
+          class="upload-area"
+          [nzDisabled]="dataConfigForm.get('state')?.value === ''"
+        >
+          <p class="ant-upload-drag-icon">
+            <i nz-icon nzType="inbox"></i>
+          </p>
+          <p class="ant-upload-text">Click or drag CSV/Excel file to upload</p>
+          <p class="ant-upload-hint">Supported formats: .csv, .xlsx, .xls</p>
+        </nz-upload>
+      </div>
+      
+      <button nz-button nzType="primary" nzShape="round" (click)="saveToDatabase()" [disabled]="data?.length === 0 || fileError"
+        class="save-btn">
+        <i nz-icon nzType="save"></i> Save to Database
+      </button>
+    </form>
+  </nz-card>
+
+  <div class="table-container" *ngIf="data?.length > 0">
+    <nz-card nzTitle="Preview Data" [nzBordered]="true" class="table-card">
+      <nz-table #basicTable [nzData]="data" [nzShowPagination]="data?.length > 10" [nzPageSize]="10"
+        [nzScroll]="{ x: calculateScrollWidth() }" class="preview-table">
+        <thead>
+          <tr>
+            <th nzAlign="center" class="th-class" *ngFor="let col of columns">{{ col }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of basicTable.data">
+            <td nzAlign="center" *ngFor="let col of columns">{{ row[col] }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+</div>
