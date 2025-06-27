@@ -1,52 +1,24 @@
-WITH PARTITION AS (
-    SELECT 
-        AC_NO, 
-        PART_NO,
-        COUNT(*) AS CNT,
-        ROW_NUMBER() OVER (PARTITION BY AC_NO ORDER BY PART_NO) AS rn,
-        COUNT(*) OVER (PARTITION BY AC_NO) AS total_parts
-    FROM GJ_FV_Data
-    GROUP BY AC_NO, PART_NO
-),
-Grouped AS (
-    SELECT 
-        *,
-        (rn - 1) / 14 AS base_group
-    FROM PARTITION
-),
-GroupCounts AS (
-    SELECT 
-        AC_NO, 
-        base_group, 
-        COUNT(*) AS group_count
-    FROM Grouped
-    GROUP BY AC_NO, base_group
-),
-FinalGrouping AS (
-    SELECT 
-        g.AC_NO,
-        g.PART_NO,
-        g.CNT,
-        g.base_group,
-        gc.group_count,
-        g.total_parts,
-        CASE 
-            WHEN g.base_group = (g.total_parts - 1) / 14 
-                 AND gc.group_count <= 7 
-            THEN g.base_group - 1
-            ELSE g.base_group
-        END AS final_round
-    FROM Grouped g
-    JOIN GroupCounts gc 
-        ON g.AC_NO = gc.AC_NO AND g.base_group = gc.base_group
-),
-ROUNDWISE AS
-(SELECT 
-    AC_NO,
-    PART_NO,
-    CNT,
-    final_round + 1 AS ROUND_NO
-FROM FinalGrouping)
-SELECT AC_NO,ROUND_NO,SUM(CNT) AS TOTAL_VOTERS FROM ROUNDWISE
-GROUP BY AC_NO,ROUND_NO
-ORDER BY AC_NO, ROUND_NO;
+<div>
+    <form [formGroup]="formData">
+      <div *ngIf="states?.length > 0">
+        <div>
+          <label>State : </label>
+        </div>
+        <div>
+          <nz-select
+            nzShowSearch
+            formControlName="state"
+            nzAllowClear
+            nzPlaceHolder="Choose"
+            [nzLoading]="selectLoader.state"
+          >
+            <nz-option
+              [nzLabel]="type?.label"
+              [nzValue]="type?.value"
+              *ngFor="let type of states"
+            ></nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </form>
+  </div>
