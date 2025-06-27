@@ -16,6 +16,7 @@ export class LayoutComponent {
   openMap: { [name: string]: boolean } = {
     dashboard: true,
     result: false,
+    powerBi : false
   };
 
   openHandler(value: string): void {

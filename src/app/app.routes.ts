@@ -6,6 +6,7 @@ import { RoundwiseResultComponent } from './pages/roundwise-result/roundwise-res
 import {DataConfigComponent} from './pages/configurator/data-config/data-config.component';
 import { KeysCongiguratorComponent } from './pages/configurator/keys-congigurator/keys-congigurator.component';
 import { RoundWisePredictionComponent } from './pages/round-wise-prediction/round-wise-prediction.component';
+import { BiRoundWiseResultComponent } from './pages/configurator/bi-round-wise-result/bi-round-wise-result.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
@@ -14,8 +15,12 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       {
-        path: 'data-config',
+        path: 'bi-result',
         component : DataConfigComponent,
+      },
+      {
+        path: 'bi-round-wise-result',
+        component : BiRoundWiseResultComponent,
       },
       {
         path: 'key-config',

@@ -30,13 +30,26 @@
       >
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/home/data-config">Data Configuration</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
             <a routerLink="/home/key-config">Key Configuration</a>
           </li>
         </ul>
       </li>
+      <li
+      nz-submenu
+      nzTitle="Power Bi Upload"
+      nzIcon="database"
+      [(nzOpen)]="openMap['powerBi']"
+      (nzOpenChange)="openHandler('powerBi')"
+    >
+      <ul>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/home/bi-result">BI Result Upload</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/home/bi-round-wise-result">BI Round Wise Result Upload</a>
+        </li>
+      </ul>
+    </li>
       <li
         nz-submenu
         nzTitle="Result"
