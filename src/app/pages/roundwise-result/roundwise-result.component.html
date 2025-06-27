@@ -1,15 +1,8 @@
 <div class="page-container" *ngIf="result && result?.length > 0">
   <div class="header-section">
     <h2 class="heading-h2">Round-Wise Election Details</h2>
-    <button
-      nz-button
-      nzType="primary"
-      nzShape="round"
-      [routerLink]="['/roundwise-result-analysis']"
-      routerLinkActive="router-link-active"
-      class="action-btn"
-      *ngIf="round_no"
-    >
+    <button nz-button nzType="primary" nzShape="round" [routerLink]="['/roundwise-result-analysis']"
+      routerLinkActive="router-link-active" class="action-btn" *ngIf="round_no">
       <i nz-icon nzType="arrow-left"></i> Back to All Rounds
     </button>
   </div>
@@ -19,9 +12,7 @@
     <div *ngFor="let item of result" class="round-section">
       <nz-card [nzTitle]="roundTitle" [nzBordered]="true" class="round-card">
         <ng-template #roundTitle>
-          <a class="link-container" (click)="roundWiseDetails(item?.round)"
-            >Round {{ item?.round }}</a
-          >
+          <a class="link-container" (click)="roundWiseDetails(item?.round)">Round {{ item?.round }}</a>
         </ng-template>
 
         <!-- Chart -->
@@ -29,27 +20,17 @@
           <h3 class="chart-title">{{ removeLabel() }}</h3>
           <ejs-circularchart3d align="center" [tilt]="-45" [legendSettings]="{ visible: true }">
             <e-circularchart3d-series-collection>
-              <e-circularchart3d-series
-                [dataSource]="item?.dataSource"
-                xName="x"
-                yName="y"
+              <e-circularchart3d-series [dataSource]="item?.dataSource" xName="x" yName="y"
                 [dataLabel]="{ visible: true, font: { size: '14px', color: '#fff' } }"
-                [pointColorMapping]="'fill'"
-              ></e-circularchart3d-series>
+                [pointColorMapping]="'fill'"></e-circularchart3d-series>
             </e-circularchart3d-series-collection>
           </ejs-circularchart3d>
         </div>
 
         <!-- Table -->
-        <nz-table
-          #basicTable
-          [nzData]="item?.response"
-          *ngIf="item?.response && item?.response?.length > 0"
-          [nzShowPagination]="item?.response?.length > 10"
-          [nzPageSize]="10"
-          [nzScroll]="{ x: '1000px' }"
-          class="results-table"
-        >
+        <nz-table #basicTable [nzData]="item?.response" *ngIf="item?.response && item?.response?.length > 0"
+          [nzShowPagination]="item?.response?.length > 10" [nzPageSize]="10" [nzScroll]="{ x: '1000px' }"
+          class="results-table">
           <thead>
             <tr>
               <th nzAlign="center" class="th-class" nzWidth="80px">AC No</th>
@@ -63,7 +44,7 @@
               <th nzAlign="center" class="th-class" nzWidth="120px">Vote Share</th>
               <th nzAlign="center" class="th-class" nzWidth="100px">Current Round Votes</th>
               <th nzAlign="center" class="th-class" nzWidth="120px">Current Round Vote Share</th>
-              
+
             </tr>
             <tr class="summary-row" style="font-weight: bold; background-color: #f5f5f5;">
               <td colspan="6" nzAlign="center">Total</td>
@@ -81,10 +62,33 @@
               <td nzAlign="center">{{ data?.candidate }}</td>
               <td nzAlign="center">{{ data?.party }}</td>
               <td nzAlign="center">{{ data?.ROUND }}</td>
-              <td nzAlign="center">{{ data?.votes }}</td>
-              <td nzAlign="center">{{ data?.round_wise_vote_share }} %</td>
-              <td nzAlign="center">{{ data?.cur_round_votes }}</td>
-              <td nzAlign="center">{{ data?.round_wise_cur_round__vote_share }} %</td>
+              <td nzAlign="center" [ngStyle]="data?.is_max_votes ? {
+                'background-color': getPartyWiseColorCodes(data?.party),
+                'color': 'white'
+              } : {}">
+                        {{ data?.votes }}
+                      </td>
+                      <td nzAlign="center" [ngStyle]="data?.is_max_vote_share ? {
+                'background-color': getPartyWiseColorCodes(data?.party),
+                'color': 'white'
+              } : {}">
+                        {{ data?.round_wise_vote_share }} %
+                      </td>
+          
+          
+                      <td nzAlign="center" [ngStyle]="data?.is_max_cur_round_votes ? {
+                'background-color': getPartyWiseColorCodes(data?.party),
+                'color': 'white'
+              } : {}">
+                        {{ data?.cur_round_votes }}
+                      </td>
+          
+                      <td nzAlign="center" [ngStyle]="data?.is_max_cur_round_vote_share ? {
+                'background-color': getPartyWiseColorCodes(data?.party),
+                'color': 'white'
+              } : {}">
+                        {{ data?.round_wise_cur_round__vote_share }} %
+                      </td>
             </tr>
           </tbody>
         </nz-table>
@@ -98,34 +102,19 @@
       <!-- Chart -->
       <div *ngIf="dataSource && dataSource?.length > 0" class="chart-container">
         <h3 class="chart-title">{{ removeLabel() }}</h3>
-        <ejs-circularchart3d
-          class="chart-content"
-          align="center"
-          [tilt]="-45"
-          [legendSettings]="{ visible: true, position: 'Bottom' }"
-        >
+        <ejs-circularchart3d class="chart-content" align="center" [tilt]="-45"
+          [legendSettings]="{ visible: true, position: 'Bottom' }">
           <e-circularchart3d-series-collection>
-            <e-circularchart3d-series
-              [dataSource]="dataSource"
-              xName="x"
-              yName="y"
+            <e-circularchart3d-series [dataSource]="dataSource" xName="x" yName="y"
               [dataLabel]="{ visible: true, font: { size: '14px', color: '#fff' } }"
-              [pointColorMapping]="'fill'"
-            ></e-circularchart3d-series>
+              [pointColorMapping]="'fill'"></e-circularchart3d-series>
           </e-circularchart3d-series-collection>
         </ejs-circularchart3d>
       </div>
 
       <!-- Table -->
-      <nz-table
-        #basicTable
-        [nzData]="result"
-        *ngIf="result && result?.length > 0"
-        [nzShowPagination]="result?.length > 10"
-        [nzPageSize]="10"
-        [nzScroll]="{ x: '1000px' }"
-        class="results-table"
-      >
+      <nz-table #basicTable [nzData]="result" *ngIf="result && result?.length > 0"
+        [nzShowPagination]="result?.length > 10" [nzPageSize]="10" [nzScroll]="{ x: '1000px' }" class="results-table">
         <thead>
           <tr>
             <th nzAlign="center" class="th-class" nzWidth="80px">AC No</th>
@@ -155,10 +144,37 @@
             <td nzAlign="center">{{ data?.candidate }}</td>
             <td nzAlign="center">{{ data?.party }}</td>
             <td nzAlign="center">{{ data?.ROUND }}</td>
-            <td nzAlign="center">{{ data?.votes }}</td>
-            <td nzAlign="center">{{ data?.round_wise_vote_share }} %</td>
-            <td nzAlign="center">{{ data?.cur_round_votes }}</td>
-            <td nzAlign="center">{{ data?.round_wise_cur_round__vote_share }} %</td>
+            <td nzAlign="center" [ngStyle]="data?.is_max_votes ? {
+      'background-color': getPartyWiseColorCodes(data?.party),
+      'color': 'white'
+    } : {}">
+              {{ data?.votes }}
+            </td>
+            <td nzAlign="center" [ngStyle]="data?.is_max_vote_share ? {
+      'background-color': getPartyWiseColorCodes(data?.party),
+      'color': 'white'
+    } : {}">
+              {{ data?.round_wise_vote_share }} %
+            </td>
+
+
+            <td nzAlign="center" [ngStyle]="data?.is_max_cur_round_votes ? {
+      'background-color': getPartyWiseColorCodes(data?.party),
+      'color': 'white'
+    } : {}">
+              {{ data?.cur_round_votes }}
+            </td>
+
+            <td nzAlign="center" [ngStyle]="data?.is_max_cur_round_vote_share ? {
+      'background-color': getPartyWiseColorCodes(data?.party),
+      'color': 'white'
+    } : {}">
+              {{ data?.round_wise_cur_round__vote_share }} %
+            </td>
+
+
+
+
           </tr>
         </tbody>
       </nz-table>

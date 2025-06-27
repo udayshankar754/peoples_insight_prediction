@@ -160,7 +160,6 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
     if (round_no) {
       this.liveResultService.roundwiseResult(state_code, ac_no, round_no).subscribe(
         (res: any) => {
-          // console.log(res);
           if (res && res?.length > 0) {
             let totalVotes = 0;
             let prev_round_votes = 0;
@@ -169,13 +168,35 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
               prev_round_votes += element?.prevRoundVotes;
             });
             const current_round_votes = totalVotes - prev_round_votes;
+            const maxVotes = Math.max(...res.map((i: any) => i?.votes ?? 0));
+            const maxVoteShare = Math.max(
+              ...res.map((i: any) => (Number(i?.votes) / totalVotes) * 100),
+            );
+            const maxCurRoundVotes = Math.max(
+              ...res.map((i: any) => Number(i?.votes) - Number(i?.prevRoundVotes ?? 0)),
+            );
+            const maxCurRoundVoteShare = Math.max(
+              ...res.map((i: any) => {
+                const curVotes = Number(i?.votes) - Number(i?.prevRoundVotes ?? 0);
+                return (curVotes / current_round_votes) * 100;
+              }),
+            );
+
             this.result = res?.map((i: any) => {
-              const curRoundVotes = Number(i?.votes) - Number(i?.prevRoundVotes || 0);
+              const votes = Number(i?.votes);
+              const prevVotes = Number(i?.prevRoundVotes ?? 0);
+              const voteShare = (votes / totalVotes) * 100;
+              const curRoundVotes = votes - prevVotes;
+              const curRoundVoteShare = (curRoundVotes / current_round_votes) * 100;
               return {
                 ...i,
-                round_wise_vote_share: `${((Number(i?.votes) / Number(totalVotes)) * 100).toFixed(2)}`,
+                round_wise_vote_share: voteShare.toFixed(2),
                 cur_round_votes: curRoundVotes,
-                round_wise_cur_round__vote_share: `${((curRoundVotes / Number(current_round_votes)) * 100).toFixed(2)}`,
+                round_wise_cur_round__vote_share: curRoundVoteShare.toFixed(2),
+                is_max_votes: votes === maxVotes,
+                is_max_vote_share: voteShare === maxVoteShare,
+                is_max_cur_round_votes: curRoundVotes === maxCurRoundVotes,
+                is_max_cur_round_vote_share: curRoundVoteShare === maxCurRoundVoteShare,
               };
             });
 
@@ -199,7 +220,6 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
     } else {
       this.liveResultService.acwiseResult(state_code, ac_no).subscribe(
         (res: any) => {
-          console.log(res);
 
           if (res && res?.length > 0) {
             let uniqueRound = [...new Set(res?.map((i: any) => i?.ROUND))];
@@ -214,14 +234,34 @@ export class RoundwiseResultComponent implements OnInit, OnDestroy {
                   prev_round_votes += element?.prevRoundVotes;
                 });
                 const current_round_votes = totalVotes - prev_round_votes;
-
+                const maxVotes = Math.max(...data.map((i: any) => i?.votes ?? 0));
+                const maxVoteShare = Math.max(
+                  ...data.map((i: any) => (Number(i?.votes) / totalVotes) * 100),
+                );
+                const maxCurRoundVotes = Math.max(
+                  ...data.map((i: any) => Number(i?.votes) - Number(i?.prevRoundVotes ?? 0)),
+                );
+                const maxCurRoundVoteShare = Math.max(
+                  ...data.map((i: any) => {
+                    const curVotes = Number(i?.votes) - Number(i?.prevRoundVotes ?? 0);
+                    return (curVotes / current_round_votes) * 100;
+                  }),
+                );
                 let response = data?.map((i: any) => {
-                  const curRoundVotes = Number(i?.votes) - Number(i?.prevRoundVotes || 0);
+                  const votes = Number(i?.votes);
+                  const prevVotes = Number(i?.prevRoundVotes ?? 0);
+                  const voteShare = (votes / totalVotes) * 100;
+                  const curRoundVotes = votes - prevVotes;
+                  const curRoundVoteShare = (curRoundVotes / current_round_votes) * 100;
                   return {
                     ...i,
-                    round_wise_vote_share: `${((Number(i?.votes) / Number(totalVotes)) * 100).toFixed(2)}`,
+                    round_wise_vote_share: voteShare.toFixed(2),
                     cur_round_votes: curRoundVotes,
-                    round_wise_cur_round__vote_share: `${((curRoundVotes / Number(current_round_votes)) * 100).toFixed(2)}`,
+                    round_wise_cur_round__vote_share: curRoundVoteShare.toFixed(2),
+                    is_max_votes: votes === maxVotes,
+                    is_max_vote_share: voteShare === maxVoteShare,
+                    is_max_cur_round_votes: curRoundVotes === maxCurRoundVotes,
+                    is_max_cur_round_vote_share: curRoundVoteShare === maxCurRoundVoteShare,
                   };
                 });
 
