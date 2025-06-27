@@ -56,10 +56,21 @@
               <th nzAlign="center" class="th-class" nzWidth="150px">Constituency</th>
               <th nzAlign="center" class="th-class" nzWidth="100px">State</th>
               <th nzAlign="center" class="th-class" nzWidth="150px">Candidate</th>
-              <th nzAlign="center" class="th-class" nzWidth="100px">Votes</th>
               <th nzAlign="center" class="th-class" nzWidth="100px">Party</th>
               <th nzAlign="center" class="th-class" nzWidth="80px">Round</th>
+
+              <th nzAlign="center" class="th-class" nzWidth="100px">Votes</th>
               <th nzAlign="center" class="th-class" nzWidth="120px">Vote Share</th>
+              <th nzAlign="center" class="th-class" nzWidth="100px">Current Round Votes</th>
+              <th nzAlign="center" class="th-class" nzWidth="120px">Current Round Vote Share</th>
+              
+            </tr>
+            <tr class="summary-row" style="font-weight: bold; background-color: #f5f5f5;">
+              <td colspan="6" nzAlign="center">Total</td>
+              <td nzAlign="center">{{getTotalVotes(item?.response ,'votes')}}</td>
+              <td></td>
+              <td nzAlign="center">{{getTotalVotes(item?.response ,'cur_round_votes')}}</td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
@@ -68,10 +79,12 @@
               <td nzAlign="center">{{ data?.constituency_name }}</td>
               <td nzAlign="center">{{ data?.state }}</td>
               <td nzAlign="center">{{ data?.candidate }}</td>
-              <td nzAlign="center">{{ data?.votes }}</td>
               <td nzAlign="center">{{ data?.party }}</td>
               <td nzAlign="center">{{ data?.ROUND }}</td>
+              <td nzAlign="center">{{ data?.votes }}</td>
               <td nzAlign="center">{{ data?.round_wise_vote_share }} %</td>
+              <td nzAlign="center">{{ data?.cur_round_votes }}</td>
+              <td nzAlign="center">{{ data?.round_wise_cur_round__vote_share }} %</td>
             </tr>
           </tbody>
         </nz-table>
