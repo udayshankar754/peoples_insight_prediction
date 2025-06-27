@@ -5,6 +5,7 @@ import { RoundwiseAnalysisComponent } from './pages/roundwise-analysis/roundwise
 import { RoundwiseResultComponent } from './pages/roundwise-result/roundwise-result.component';
 import {DataConfigComponent} from './pages/configurator/data-config/data-config.component';
 import { KeysCongiguratorComponent } from './pages/configurator/keys-congigurator/keys-congigurator.component';
+import { RoundWisePredictionComponent } from './pages/round-wise-prediction/round-wise-prediction.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
@@ -34,4 +35,8 @@ export const routes: Routes = [
     path: 'roundwise-result-analysis/:state/:state_code',
     component: RoundwiseAnalysisComponent,
   },
+  {
+    path : 'roundwise-prediction',
+    component : RoundWisePredictionComponent
+  }
 ];
