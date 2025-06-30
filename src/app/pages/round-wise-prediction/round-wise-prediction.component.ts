@@ -4,16 +4,15 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { LiveResultService } from '../../services/result/live-result.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-round-wise-prediction',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NzSelectModule
-  ],
+  standalone : true,
+  imports: [CommonModule, ReactiveFormsModule, NzSelectModule , NzTableModule],
+  host: { ngSkipHydration: 'true' },
   templateUrl: './round-wise-prediction.component.html',
-  styleUrl: './round-wise-prediction.component.scss'
+  styleUrl: './round-wise-prediction.component.scss',
 })
 export class RoundWisePredictionComponent implements OnInit {
   selectLoader: {
@@ -21,12 +20,14 @@ export class RoundWisePredictionComponent implements OnInit {
   } = { state: false };
   states: any;
   formData: FormGroup;
-
+  roundwiseTotalVoter: any;
+  roundwiseBiResult: any;
+  biResultKeys : any;
 
   constructor(
-    private fb : FormBuilder,
-    private liveResultService : LiveResultService,
-    private messageService : NzMessageService
+    private fb: FormBuilder,
+    private liveResultService: LiveResultService,
+    private messageService: NzMessageService,
   ) {
     this.formData = this.fb.group({
       state: ['', [Validators.required]],
@@ -38,7 +39,10 @@ export class RoundWisePredictionComponent implements OnInit {
 
     this.formData.get('state')?.valueChanges.subscribe((value: any) => {
       const state = this.states.find((state: any) => state.value === value);
-      if (state) {}
+      if (state) {
+        this.fetchRoundWiseTotalVoter(state.value);
+        this.fetchRoundWiseBiResult(state.value);
+      }
     });
   }
 
@@ -50,6 +54,33 @@ export class RoundWisePredictionComponent implements OnInit {
           label: state?.state,
           value: state?.state_code,
         }));
+      },
+      (error: any) => {
+        console.error('Error fetching states:', error);
+        this.messageService.error('Failed to fetch states. Please try again later.');
+      },
+    );
+  }
+
+  fetchRoundWiseTotalVoter(state: any) {
+    this.liveResultService.roundwiseTotalVoter(state).subscribe(
+      (data: any) => {
+        // console.log(data);
+        this.roundwiseTotalVoter = data;
+      },
+      (error: any) => {
+        console.error('Error fetching states:', error);
+        this.messageService.error('Failed to fetch states. Please try again later.');
+      },
+    );
+  }
+
+  fetchRoundWiseBiResult(state: any) {
+    this.liveResultService.roundwiseBiResult(state).subscribe(
+      (data: any) => {
+        console.log(data);
+        this.roundwiseBiResult = data;
+        this.biResultKeys = Object.keys(data[0]);
       },
       (error: any) => {
         console.error('Error fetching states:', error);

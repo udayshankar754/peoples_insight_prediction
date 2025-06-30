@@ -88,4 +88,12 @@ export class LiveResultService {
     this.stopPolling$.next();
     this.stopPolling$.complete();
   }
+
+  roundwiseBiResult(state_code: any) {
+    return this.http.get(`${environment.baseUrl}result/roundwise-bi-result/${state_code}`);
+  }
+
+  roundwiseTotalVoter(state_code: any) {
+    return this.http.get(`${environment.baseUrl}result/roundwise-total-voter/${state_code}`);
+  }
 }

@@ -53,7 +53,7 @@
   </div>
 
   <!-- Charts Section -->
-  <div class="charts-container" *ngIf="resultData && resultData?.length > 0">
+  <!-- <div class="charts-container" *ngIf="resultData && resultData?.length > 0">
     <div class="chart-card" *ngIf="dataSource_2 && dataSource_2?.length > 0 && isBrowser()">
       <h3 class="chart-title">Predicted Result {{ removeLabel() }}</h3>
       <ejs-circularchart3d [tilt]="-45" [legendSettings]="{ visible: true, position: 'Bottom' }">
@@ -82,10 +82,10 @@
         </e-circularchart3d-series-collection>
       </ejs-circularchart3d>
     </div>
-  </div>
+  </div> -->
 
   <!-- Conclusion Table -->
-  <div class="table-container" *ngIf="conclusion && conclusion?.length > 0">
+  <!-- <div class="table-container" *ngIf="conclusion && conclusion?.length > 0">
     <nz-card nzTitle="Election Results Summary" [nzBordered]="true" class="table-card">
       <nz-table #basicTable [nzData]="conclusion" [nzShowPagination]="false" class="summary-table">
         <thead>
@@ -115,7 +115,7 @@
         </tbody>
       </nz-table>
     </nz-card>
-  </div>
+  </div> -->
 
   <!-- Detailed Results Table -->
   <div class="table-container" *ngIf="resultData && resultData?.length > 0">
