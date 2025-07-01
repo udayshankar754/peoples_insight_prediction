@@ -125,6 +125,7 @@ export class DataConfigComponent implements OnInit {
           this.columns = parsedData.length > 0 ? Object.keys(parsedData[0]) : [];
           if (this.data.length > 0) {
             let firstRow = this.data[0];
+            console.log(firstRow);
             if (!(Object.keys(firstRow)?.map((i: any) => i?.toLowerCase())?.includes('ac_no'))) {
               this.messageService.create('error', 'Ac No column is required');
               this.fileError = true;

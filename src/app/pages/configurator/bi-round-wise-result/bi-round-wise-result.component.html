@@ -12,18 +12,17 @@
           <nz-option *ngFor="let type of stateList" [nzLabel]="type?.label" [nzValue]="type?.value"></nz-option>
         </nz-select>
       </div>
-     
+
       <div class="form-group">
+        <label class="form-label">Upload File Sample</label>
+        <div class="sample-links">
+          <a href="https://res.cloudinary.com/do8vkz3mn/raw/upload/v1751364302/Bi_Roundwise_Result_SampleFiles_jljzqk.xlsx"
+            class="sample-link">View BI ROUNDWISE RESULT Sample</a>
+        </div>
         <label class="form-label">Upload File</label>
-        <nz-upload
-          nzType="drag"
-          [nzAccept]="'.csv,.xlsx,.xls'"
-          [nzShowUploadList]="true"
-          [nzFileList]="fileList"
-          (nzChange)="onFileChange($event)"
-          class="upload-area"
-          [nzDisabled]="dataConfigForm.get('state')?.value === ''"
-        >
+        <nz-upload nzType="drag" [nzAccept]="'.csv,.xlsx,.xls'" [nzShowUploadList]="true" [nzFileList]="fileList"
+          (nzChange)="onFileChange($event)" class="upload-area"
+          [nzDisabled]="dataConfigForm.get('state')?.value === ''">
           <p class="ant-upload-drag-icon">
             <i nz-icon nzType="inbox"></i>
           </p>
@@ -31,9 +30,9 @@
           <p class="ant-upload-hint">Supported formats: .csv, .xlsx, .xls</p>
         </nz-upload>
       </div>
-      
-      <button nz-button nzType="primary" nzShape="round" (click)="saveToDatabase()" [disabled]="data?.length === 0 || fileError"
-        class="save-btn">
+
+      <button nz-button nzType="primary" nzShape="round" (click)="saveToDatabase()"
+        [disabled]="data?.length === 0 || fileError" class="save-btn">
         <i nz-icon nzType="save"></i> Save to Database
       </button>
     </form>
