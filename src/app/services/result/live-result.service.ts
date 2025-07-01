@@ -89,8 +89,8 @@ export class LiveResultService {
     this.stopPolling$.complete();
   }
 
-  roundwiseBiResult(state_code: any) {
-    return this.http.get(`${environment.baseUrl}result/roundwise-bi-result/${state_code}`);
+  roundwiseBiResult(state_code: any , ac_no : any) {
+    return this.http.get(`${environment.baseUrl}result/roundwise-bi-result/${state_code}/${ac_no}`);
   }
 
   roundwiseTotalVoter(state_code: any) {
@@ -101,7 +101,7 @@ export class LiveResultService {
     return this.http.get(`${environment.baseUrl}result/state-wise-turnout/${state_code}`);
   }
 
-  roundwiseLiveResult(state_code: any) {
-    return this.http.get(`${environment.baseUrl}result/round-wise-result/${state_code}`); 
+  roundwiseLiveResult(state_code: any , ac_no : any) {
+    return this.http.get(`${environment.baseUrl}result/round-wise-result/${state_code}/${ac_no}`); 
   }
 }

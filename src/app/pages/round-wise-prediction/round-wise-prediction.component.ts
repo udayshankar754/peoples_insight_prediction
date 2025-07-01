@@ -17,15 +17,17 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 export class RoundWisePredictionComponent implements OnInit {
   selectLoader: {
     state: boolean;
-  } = { state: false };
-  states: any;
+    ac_no: boolean;
+  } = { state: false, ac_no: false };
+  states: any = [];
   formData: FormGroup;
-  roundwiseTotalVoter: any;
-  roundwiseBiResult: any;
-  biResultKeys: any;
-  turnout: any;
-  liveResultData: any;
+  roundwiseTotalVoter: any = [];
+  roundwiseBiResult: any = [];
+  biResultKeys: any = [];
+  turnout: any = [];
+  liveResultData: any = [];
   partyColor: any = [];
+  ac_list: any = [];
 
   constructor(
     private fb: FormBuilder,
@@ -34,6 +36,7 @@ export class RoundWisePredictionComponent implements OnInit {
   ) {
     this.formData = this.fb.group({
       state: ['', [Validators.required]],
+      ac_no: ['', [Validators.required]],
     });
   }
 
@@ -41,10 +44,16 @@ export class RoundWisePredictionComponent implements OnInit {
     this.fetchStates();
 
     this.formData.get('state')?.valueChanges.subscribe((value: any) => {
+      this.reset('state');
       const state = this.states.find((state: any) => state.value === value);
       if (state) {
+        this.fetchAcNO(state.value);
+      }
+    });
+    this.formData.get('ac_no')?.valueChanges.subscribe((value: any) => {
+      this.reset('ac_no');
+      if (value) {
         this.fetchPartyColor();
-        this.fetchRoundWiseTotalVoter(state.value);
       }
     });
   }
@@ -52,10 +61,24 @@ export class RoundWisePredictionComponent implements OnInit {
   fetchStates() {
     this.liveResultService.getStateCode().subscribe(
       (data: any) => {
-        console.log(data);
         this.states = data.map((state: any) => ({
           label: state?.state,
           value: state?.state_code,
+        }));
+      },
+      (error: any) => {
+        console.error('Error fetching states:', error);
+        this.messageService.error('Failed to fetch states. Please try again later.');
+      },
+    );
+  }
+
+  fetchAcNO(state: string) {
+    this.liveResultService.getAcNoList(state).subscribe(
+      (data: any) => {
+        this.ac_list = data.map((state: any) => ({
+          label: state?.AC_NO,
+          value: state?.AC_NO,
         }));
       },
       (error: any) => {
@@ -69,6 +92,7 @@ export class RoundWisePredictionComponent implements OnInit {
     this.liveResultService.getPartyColor().subscribe(
       (data: any) => {
         this.partyColor = data?.party_color;
+        this.fetchRoundWiseTotalVoter(this.formData.get('state')?.value);
       },
       (error: any) => {
         console.error('Error fetching party color:', error);
@@ -95,7 +119,7 @@ export class RoundWisePredictionComponent implements OnInit {
     this.liveResultService.stateWiseTurnout(state).subscribe(
       (data: any) => {
         this.turnout = data;
-        this.fetchRoundWiseResult(state);
+        this.fetchRoundWiseResult(state , this.formData.get('ac_no')?.value);
       },
       (error: any) => {
         console.error('Error fetching states:', error);
@@ -104,8 +128,8 @@ export class RoundWisePredictionComponent implements OnInit {
     );
   }
 
-  fetchRoundWiseResult(state: any) {
-    this.liveResultService.roundwiseLiveResult(state).subscribe(
+  fetchRoundWiseResult(state: any , ac_no: any) {
+    this.liveResultService.roundwiseLiveResult(state , ac_no).subscribe(
       (data: any) => {
         // console.log(data);
         this.liveResultData = data;
@@ -119,7 +143,7 @@ export class RoundWisePredictionComponent implements OnInit {
   }
 
   fetchRoundWiseBiResult(state: any) {
-    this.liveResultService.roundwiseBiResult(state).subscribe(
+    this.liveResultService.roundwiseBiResult(state ,this.formData.get('ac_no')?.value).subscribe(
       (data: any) => {
         const itemsToRemove = ['STATE', 'AC_NO', 'ROUND'];
         const parties = Object.keys(data[0]).filter((item) => !itemsToRemove.includes(item));
@@ -259,7 +283,6 @@ export class RoundWisePredictionComponent implements OnInit {
 
         totalRow.__isTotal = true;
         this.roundwiseBiResult.push(totalRow);
-
       },
       (error: any) => {
         console.error('Error fetching states:', error);
@@ -273,5 +296,28 @@ export class RoundWisePredictionComponent implements OnInit {
       this.partyColor?.find((i: any) => i?.PARTY?.toLowerCase() == party?.toLowerCase())?.CODES ||
       '#ccc';
     return color;
+  }
+
+  reset(cotrol: string) {
+    switch (cotrol) {
+      case 'state':
+        this.formData.get('ac_no')?.reset();
+        this.roundwiseTotalVoter = [];
+        this.roundwiseBiResult = [];
+        this.biResultKeys = [];
+        this.turnout = [];
+        this.liveResultData = [];
+        this.partyColor = [];
+        this.ac_list = [];
+        break;
+      case 'ac_no':
+        this.roundwiseTotalVoter = [];
+        this.roundwiseBiResult = [];
+        this.biResultKeys = [];
+        this.turnout = [];
+        this.liveResultData = [];
+        this.partyColor = [];
+        break;
+    }
   }
 }

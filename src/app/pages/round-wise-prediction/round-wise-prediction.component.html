@@ -11,10 +11,22 @@
         </nz-select>
       </div>
     </div>
+
+    <div *ngIf="ac_list?.length > 0">
+      <div>
+        <label>Ac_no : </label>
+      </div>
+      <div>
+        <nz-select nzShowSearch formControlName="ac_no" nzAllowClear nzPlaceHolder="Choose"
+          [nzLoading]="selectLoader.ac_no">
+          <nz-option [nzLabel]="type?.label" [nzValue]="type?.value" *ngFor="let type of ac_list"></nz-option>
+        </nz-select>
+      </div>
+    </div>
   </form>
 </div>
 
-<div>
+<div *ngIf="roundwiseBiResult && roundwiseBiResult?.length > 0">
   <nz-table #basicTable2 [nzData]="roundwiseBiResult" nzShowPagination="false" [nzScroll]="{ y: '800px' }">
     <thead>
       <tr>
