@@ -10,7 +10,8 @@ import {
   SaveOutline,
   InboxOutline,
   DownloadOutline,
-  DatabaseOutline
+  DatabaseOutline,
+  SettingOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
@@ -25,5 +26,6 @@ export const icons = [
   SaveOutline,
   InboxOutline,
   DownloadOutline,
-  DatabaseOutline
+  DatabaseOutline,
+  SettingOutline
 ];

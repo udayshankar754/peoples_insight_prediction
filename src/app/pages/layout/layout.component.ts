@@ -14,7 +14,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 export class LayoutComponent {
   isCollapsed = false;
   openMap: { [name: string]: boolean } = {
-    dashboard: true,
+    configuration: true,
     result: false,
     powerBi : false
   };

@@ -23,14 +23,17 @@
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li
         nz-submenu
-        nzTitle="Dashboard"
-        nzIcon="dashboard"
-        [(nzOpen)]="openMap['dashboard']"
-        (nzOpenChange)="openHandler('dashboard')"
+        nzTitle="Configuration"
+        nzIcon="setting"
+        [(nzOpen)]="openMap['configuration']"
+        (nzOpenChange)="openHandler('configuration')"
       >
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/home/key-config">Key Configuration</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/home/turnout-config">Turnout Configuration</a>
           </li>
         </ul>
       </li>

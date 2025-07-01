@@ -7,6 +7,7 @@ import {DataConfigComponent} from './pages/configurator/data-config/data-config.
 import { KeysCongiguratorComponent } from './pages/configurator/keys-congigurator/keys-congigurator.component';
 import { RoundWisePredictionComponent } from './pages/round-wise-prediction/round-wise-prediction.component';
 import { BiRoundWiseResultComponent } from './pages/configurator/bi-round-wise-result/bi-round-wise-result.component';
+import { TurnoutComponent } from './pages/configurator/turnout/turnout.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/home' },
@@ -26,6 +27,10 @@ export const routes: Routes = [
         path: 'key-config',
         component : KeysCongiguratorComponent,
       },
+      {
+        path : 'turnout-config',
+        component : TurnoutComponent,
+      }
     ],
   },
   {

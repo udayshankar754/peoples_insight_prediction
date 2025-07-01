@@ -1,0 +1,188 @@
+<div class="page-container">
+  <div class="header-section">
+    <h2 class="heading-h2">Upload Turnout Data</h2>
+  </div>
+
+  <nz-card nzTitle="Upload Turnout Configuration" [nzBordered]="true" class="upload-card">
+    <form [formGroup]="formData" class="upload-form">
+      <ng-container *ngIf="states?.length > 0">
+        <div class="form-group">
+          <label class="form-label">State</label>
+          <nz-select
+            nzShowSearch
+            formControlName="state"
+            nzAllowClear
+            nzPlaceHolder="Select a State"
+            [nzLoading]="loader.state"
+            class="select-state"
+          >
+            <nz-option *ngFor="let type of states" [nzLabel]="type?.label" [nzValue]="type?.value"></nz-option>
+          </nz-select>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="formData.get('state')?.value">
+        <div class="form-group">
+          <label class="form-label">State Column</label>
+          <nz-select
+            nzShowSearch
+            formControlName="stateColumnKey"
+            nzAllowClear
+            nzPlaceHolder="Select a Column"
+            [nzLoading]="loader.stateColumnKey"
+            class="select-state"
+          >
+            <nz-option *ngFor="let type of stateColumnKeys" [nzLabel]="type?.label" [nzValue]="type?.value"></nz-option>
+          </nz-select>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="formData.get('stateColumnKey')?.value">
+        <div class="button-group">
+          <button
+            nz-button
+            nzType="primary"
+            nzShape="round"
+            (click)="submit()"
+            class="save-btn"
+            [disabled]="!formData.get('stateColumnKey')?.value"
+          >
+            <i nz-icon nzType="save"></i> Submit
+          </button>
+          <button
+            nz-button
+            nzType="primary"
+            nzShape="round"
+            (click)="saveToDatabase()"
+            [disabled]="acWiseTurnout?.length === 0"
+            class="save-btn"
+            *ngIf="formData.get('stateColumnKey')?.value === 'AC_NO'"
+          >
+            <i nz-icon nzType="save"></i> Save to Database
+          </button>
+          <button
+            nz-button
+            nzType="primary"
+            nzShape="round"
+            (click)="saveToDatabase()"
+            [disabled]="boothWardWiseTurnout?.length === 0"
+            class="save-btn"
+            *ngIf="formData.get('stateColumnKey')?.value !== 'AC_NO'"
+          >
+            <i nz-icon nzType="save"></i> Save to Database Booth
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-container
+        *ngIf="formData.get('stateColumnKey')?.value && ((acWiseTurnout?.length > 0) || (boothWardWiseTurnout?.length > 0))"
+      >
+        <div class="form-group">
+          <label class="form-label">Sample File</label>
+          <div class="sample-links">
+            <a
+              href="https://res.cloudinary.com/do8vkz3mn/raw/upload/v1751358711/Ac_Turnout_Sample_yu3oas.xlsx"
+              *ngIf="formData.get('stateColumnKey')?.value === 'AC_NO'"
+              class="sample-link"
+            >View AC Turnout Sample</a>
+            <a
+              href="https://res.cloudinary.com/do8vkz3mn/raw/upload/v1751358697/Ward_Turnout_Sample_qvsb5q.xlsx"
+              *ngIf="formData.get('stateColumnKey')?.value === 'WARD_NO'"
+              class="sample-link"
+            >View Ward Turnout Sample</a>
+            <a
+              href="https://res.cloudinary.com/do8vkz3mn/raw/upload/v1751358682/Part_Turnout_Sample_uhbvrt.xlsx"
+              *ngIf="formData.get('stateColumnKey')?.value === 'PART_NO'"
+              class="sample-link"
+            >View Part Turnout Sample</a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Upload File</label>
+          <nz-upload
+            nzType="drag"
+            [nzAccept]="'.csv,.xlsx,.xls'"
+            [nzShowUploadList]="true"
+            [nzFileList]="fileList"
+            (nzChange)="onFileChange($event)"
+            [nzDisabled]="!formData.get('stateColumnKey')?.value"
+            class="upload-area"
+          >
+            <p class="ant-upload-drag-icon">
+              <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag CSV/Excel file to upload</p>
+            <p class="ant-upload-hint">Supported formats: .csv, .xlsx, .xls</p>
+          </nz-upload>
+        </div>
+      </ng-container>
+    </form>
+  </nz-card>
+
+  <div class="table-container" *ngIf="acWiseTurnout?.length > 0">
+    <nz-card nzTitle="AC Turnout Preview" [nzBordered]="true" class="table-card">
+      <nz-table
+        #acTable
+        [nzData]="acWiseTurnout"
+        [nzShowPagination]="acWiseTurnout?.length > 10"
+        [nzPageSize]="10"
+        class="preview-table"
+      >
+        <thead>
+          <tr>
+            <th nzAlign="center" class="th-class">STATE_CODE</th>
+            <th nzAlign="center" class="th-class">AC_NO</th>
+            <th nzAlign="center" class="th-class">AC_TURNOUT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of acTable.data">
+            <td nzAlign="center">{{ row?.STATE_CODE }}</td>
+            <td nzAlign="center">{{ row?.AC_NO }}</td>
+            <td nzAlign="center">
+              <input nz-input type="number" [(ngModel)]="row.AC_TURNOUT" class="table-input" />
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+
+  <div class="table-container" *ngIf="boothWardWiseTurnout?.length > 0">
+    <nz-card nzTitle="Booth/Ward Turnout Preview" [nzBordered]="true" class="table-card">
+      <nz-table
+        #boothTable
+        [nzData]="boothWardWiseTurnout"
+        [nzShowPagination]="boothWardWiseTurnout?.length > 10"
+        [nzPageSize]="10"
+        class="preview-table"
+      >
+        <thead>
+          <tr>
+            <th nzAlign="center" class="th-class">STATE_CODE</th>
+            <th nzAlign="center" class="th-class">AC_NO</th>
+            <th nzAlign="center" class="th-class" *ngIf="formData.get('stateColumnKey')?.value === 'PART_NO'">PART_NO</th>
+            <th nzAlign="center" class="th-class" *ngIf="formData.get('stateColumnKey')?.value === 'PART_NO'">PART_NO_TURNOUT</th>
+            <th nzAlign="center" class="th-class" *ngIf="formData.get('stateColumnKey')?.value === 'WARD_NO'">WARD_NO</th>
+            <th nzAlign="center" class="th-class" *ngIf="formData.get('stateColumnKey')?.value === 'WARD_NO'">WARD_TURNOUT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of boothTable.data">
+            <td nzAlign="center">{{ row?.STATE_CODE }}</td>
+            <td nzAlign="center">{{ row?.AC_NO }}</td>
+            <td nzAlign="center" *ngIf="formData.get('stateColumnKey')?.value === 'PART_NO'">{{ row?.PART_NO }}</td>
+            <td nzAlign="center" *ngIf="formData.get('stateColumnKey')?.value === 'PART_NO'">
+              <input nz-input type="number" [(ngModel)]="row.PART_NO_TURNOUT" class="table-input" />
+            </td>
+            <td nzAlign="center" *ngIf="formData.get('stateColumnKey')?.value === 'WARD_NO'">{{ row?.WARD_NO }}</td>
+            <td nzAlign="center" *ngIf="formData.get('stateColumnKey')?.value === 'WARD_NO'">
+              <input nz-input type="number" [(ngModel)]="row.WARD_TURNOUT" class="table-input" />
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+</div>
