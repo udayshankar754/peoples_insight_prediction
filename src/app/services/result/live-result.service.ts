@@ -10,12 +10,12 @@ export class LiveResultService {
 
   constructor(private http: HttpClient) {}
 
-  getLiveResult(state : string , state_code : string)  {
+  getLiveResult(state: string, state_code: string) {
     let params = new HttpParams();
 
     if (state) params = params.set('state', state);
     if (state_code) params = params.set('state_code', state_code);
-    return this.http.get(`${environment.baseUrl}result/live-result?${new Date()}` , { params });
+    return this.http.get(`${environment.baseUrl}result/live-result?${new Date()}`, { params });
   }
 
   getPartyColorBi() {
@@ -26,11 +26,11 @@ export class LiveResultService {
     return this.http.get(`${environment.baseUrl}result/party-color`);
   }
 
-  getVotes(state : any) {
+  getVotes(state: any) {
     let params = new HttpParams();
 
     if (state) params = params.set('state', state);
-    return this.http.get(`${environment.baseUrl}result/votes-percentage` ,{ params });
+    return this.http.get(`${environment.baseUrl}result/votes-percentage`, { params });
   }
 
   getStateCode() {
@@ -68,17 +68,17 @@ export class LiveResultService {
   //   );
   // }
 
-  roundWiseReport(state : string | null , state_code : string | null) {
-      let params = new HttpParams();
-  
-      if (state) params = params.set('state', state);
-      if (state_code) params = params.set('state_code', state_code);
-    return this.http.get(`${environment.baseUrl}result/round-wise-report` , { params });
+  roundWiseReport(state: string | null, state_code: string | null) {
+    let params = new HttpParams();
+
+    if (state) params = params.set('state', state);
+    if (state_code) params = params.set('state_code', state_code);
+    return this.http.get(`${environment.baseUrl}result/round-wise-report`, { params });
   }
 
-  startPolling(intervalMs: number , state : string , state_code : string): Observable<any> {
+  startPolling(intervalMs: number, state: string, state_code: string): Observable<any> {
     return timer(0, intervalMs).pipe(
-      switchMap(() => this.getLiveResult(state , state_code)),
+      switchMap(() => this.getLiveResult(state, state_code)),
       takeUntil(this.stopPolling$),
       shareReplay(1), // Ensures multiple subscribers don't trigger multiple requests
     );
@@ -95,5 +95,13 @@ export class LiveResultService {
 
   roundwiseTotalVoter(state_code: any) {
     return this.http.get(`${environment.baseUrl}result/roundwise-total-voter/${state_code}`);
+  }
+
+  stateWiseTurnout(state_code: any) {
+    return this.http.get(`${environment.baseUrl}result/state-wise-turnout/${state_code}`);
+  }
+
+  roundwiseLiveResult(state_code: any) {
+    return this.http.get(`${environment.baseUrl}result/round-wise-result/${state_code}`); 
   }
 }
