@@ -1,54 +1,88 @@
-<div>
-  <form [formGroup]="formData">
-    <div *ngIf="states?.length > 0">
-      <div>
-        <label>State : </label>
+<div class="page-container">
+  <div class="header-section">
+    <h2 class="heading-h2">Election Result Data</h2>
+  </div>
+  <nz-card nzTitle="Select Election Parameters" [nzBordered]="true" class="upload-card">
+    <form [formGroup]="formData" class="upload-form">
+      <div class="form-group-row">
+        <div class="form-group" *ngIf="states?.length > 0">
+          <label class="form-label">State</label>
+          <nz-select
+            nzShowSearch
+            formControlName="state"
+            nzAllowClear
+            nzPlaceHolder="Select a State"
+            [nzLoading]="selectLoader.state"
+            class="select-state"
+          >
+            <nz-option *ngFor="let type of states" [nzLabel]="type?.label" [nzValue]="type?.value"></nz-option>
+          </nz-select>
+        </div>
+
+        <div class="form-group" *ngIf="ac_list?.length > 0">
+          <label class="form-label">AC Number</label>
+          <nz-select
+            nzShowSearch
+            formControlName="ac_no"
+            nzAllowClear
+            nzPlaceHolder="Select AC Number"
+            [nzLoading]="selectLoader.ac_no"
+            class="select-state"
+          >
+            <nz-option *ngFor="let type of ac_list" [nzLabel]="type?.label" [nzValue]="type?.value"></nz-option>
+          </nz-select>
+        </div>
       </div>
-      <div>
-        <nz-select nzShowSearch formControlName="state" nzAllowClear nzPlaceHolder="Choose"
-          [nzLoading]="selectLoader.state">
-          <nz-option [nzLabel]="type?.label" [nzValue]="type?.value" *ngFor="let type of states"></nz-option>
-        </nz-select>
-      </div>
+    </form>
+  </nz-card>
+ 
+
+    <div class="table-column" *ngIf="roundwiseBiResult?.length > 0">
+      <nz-card nzTitle="Election Result Preview" [nzBordered]="true" class="table-card">
+        <div class="table-header">
+          <div class="table-summary">{{ tableSummary }}</div>
+        </div>
+        <nz-table
+          #resultTable
+          [nzData]="roundwiseBiResult"
+          nzBordered
+          [nzShowPagination]="false"
+          [nzScroll]="{ y: '800px' }"
+          class="preview-table"
+        >
+          <thead>
+            <tr>
+              <th *ngFor="let item of biResultKeys" nzAlign="center" class="th-class">{{ item }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of roundwiseBiResult" [ngClass]="{ 'total-row': data?.__isTotal }">
+              <td
+                *ngFor="let item of biResultKeys"
+                nzAlign="center"
+                [ngClass]="{
+                  'highlight-cell':
+                    !data?.__isTotal &&
+                    ((item === data?.__isBiMaxParty && data?.__isBiMaxColor) ||
+                     (item === data?.__isActualMaxParty && data?.__isActualMaxColor)),
+                  'highlight-text':
+                    !data?.__isTotal &&
+                    ((item === data?.__isBiMaxParty && data?.__isBiMaxColor) ||
+                     (item === data?.__isActualMaxParty && data?.__isActualMaxColor))
+                }"
+                [style.background-color]="
+                  !data?.__isTotal &&
+                  ((item === data?.__isBiMaxParty && data?.__isBiMaxColor) ||
+                   (item === data?.__isActualMaxParty && data?.__isActualMaxColor))
+                    ? data[item === data?.__isBiMaxParty ? '__isBiMaxColor' : '__isActualMaxColor']
+                    : ''
+                "
+              >
+                {{ data?.[item] || '-' }}
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
     </div>
-
-    <div *ngIf="ac_list?.length > 0">
-      <div>
-        <label>Ac_no : </label>
-      </div>
-      <div>
-        <nz-select nzShowSearch formControlName="ac_no" nzAllowClear nzPlaceHolder="Choose"
-          [nzLoading]="selectLoader.ac_no">
-          <nz-option [nzLabel]="type?.label" [nzValue]="type?.value" *ngFor="let type of ac_list"></nz-option>
-        </nz-select>
-      </div>
-    </div>
-  </form>
-</div>
-
-<div *ngIf="roundwiseBiResult && roundwiseBiResult?.length > 0">
-  <nz-table #basicTable2 [nzData]="roundwiseBiResult" nzShowPagination="false" [nzScroll]="{ y: '800px' }">
-    <thead>
-      <tr>
-        <th *ngFor="let item of biResultKeys">{{ item }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of roundwiseBiResult" [ngClass]="{ 'total-row': data?.__isTotal }">
-        <td *ngFor="let item of biResultKeys" [ngStyle]="{
-              'background-color':
-                !data?.__isTotal &&
-                item === data?.__isBiMaxParty &&
-                data?.__isBiMaxColor
-                  ? data.__isBiMaxColor
-                  :  !data?.__isTotal &&
-                item === data?.__isActualMaxParty &&
-                data?.__isActualMaxColor ? data?.__isActualMaxColor :''
-            }">
-          {{ data?.[item] || '-' }}
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
-
 </div>
