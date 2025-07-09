@@ -25,7 +25,7 @@ import { NzUploadChangeParam, NzUploadFile, NzUploadModule } from 'ng-zorro-antd
   ],
   host: { ngSkipHydration: 'true' },
   templateUrl: './bi-round-wise-result.component.html',
-  styleUrl: './bi-round-wise-result.component.scss'
+  styleUrl: './bi-round-wise-result.component.css'
 })
 export class BiRoundWiseResultComponent implements OnInit {
   data: any = [];

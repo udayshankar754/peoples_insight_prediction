@@ -34,7 +34,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
   ],
   host: { ngSkipHydration: 'true' },
   templateUrl: './turnout.component.html',
-  styleUrl: './turnout.component.scss',
+  styleUrl: './turnout.component.css',
 })
 export class TurnoutComponent implements OnInit {
   formData: FormGroup;

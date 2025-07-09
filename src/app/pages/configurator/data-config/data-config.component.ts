@@ -25,7 +25,7 @@ import { NzUploadChangeParam, NzUploadFile, NzUploadModule } from 'ng-zorro-antd
   ],
   host: { ngSkipHydration: 'true' },
   templateUrl: './data-config.component.html',
-  styleUrl: './data-config.component.scss',
+  styleUrl: './data-config.component.css',
 })
 export class DataConfigComponent implements OnInit {
   data: any = [];

@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   standalone: true,
   imports: [NzTableModule, CommonModule, NzSelectModule, FormsModule, NzCardModule, NzSpinModule],
   templateUrl: './roundwise-analysis.component.html',
-  styleUrl: './roundwise-analysis.component.scss',
+  styleUrl: './roundwise-analysis.component.css',
   host: { ngSkipHydration: 'true' },
 })
 export class RoundwiseAnalysisComponent implements OnInit {

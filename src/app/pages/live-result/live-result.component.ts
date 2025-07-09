@@ -40,7 +40,7 @@ import { ConfiguratorService } from '../../services/configurator/configurator.se
   ],
   host: { ngSkipHydration: 'true' },
   templateUrl: './live-result.component.html',
-  styleUrl: './live-result.component.scss',
+  styleUrl: './live-result.component.css',
 })
 export class LiveResultComponent implements OnInit, OnDestroy {
   resultData: any;

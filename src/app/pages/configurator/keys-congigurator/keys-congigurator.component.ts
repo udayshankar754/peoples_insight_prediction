@@ -24,7 +24,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
   ],
   host: { ngSkipHydration: 'true' },
   templateUrl: './keys-congigurator.component.html',
-  styleUrl: './keys-congigurator.component.scss',
+  styleUrl: './keys-congigurator.component.css',
 })
 export class KeysCongiguratorComponent implements OnInit {
   keysConfigForm: FormGroup;

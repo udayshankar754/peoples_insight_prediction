@@ -50,7 +50,7 @@ import { ConfiguratorService } from '../../services/configurator/configurator.se
   ],
   providers: [MapsTooltipService, DataLabelService, ZoomService, LegendService],
   templateUrl: './result-map.component.html',
-  styleUrl: './result-map.component.scss',
+  styleUrl: './result-map.component.css',
 })
 export class ResultMapComponent implements OnInit, OnChanges {
   @Input() stateName: any;

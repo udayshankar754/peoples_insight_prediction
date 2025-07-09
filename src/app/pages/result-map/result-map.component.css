@@ -29,12 +29,13 @@
 
 .select-option {
   width: 200px;
-  .ant-select-selector {
-    border-radius: 8px !important;
-    height: 40px !important;
-    display: flex;
-    align-items: center;
-  }
+}
+
+.select-option .ant-select-selector {
+  border-radius: 8px !important;
+  height: 40px !important;
+  display: flex;
+  align-items: center;
 }
 
 .action-btn {
@@ -44,15 +45,16 @@
   padding: 8px 16px;
   height: 40px;
   transition: all 0.3s ease;
-  &:hover {
-    background: #40a9ff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+}
+
+.action-btn:hover {
+  background: #40a9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .action-btn-performed {
-  background: #52c41a; // green (success) color
+  background: #52c41a; /* green (success) color */
   border: none;
   font-size: 16px;
   padding: 8px 16px;
@@ -60,12 +62,12 @@
   color: white;
   transition: all 0.3s ease;
   cursor: default;
+}
 
-  &:hover {
-    background: #73d13d;
-    transform: none; // No elevation if action is already performed
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.action-btn-performed:hover {
+  background: #73d13d;
+  transform: none; /* No elevation if action is already performed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .maps-container {
@@ -81,9 +83,10 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
   overflow: hidden;
-  &:hover {
-    transform: translateY(-4px);
-  }
+}
+
+.map-card:hover {
+  transform: translateY(-4px);
 }
 
 .map-content {
@@ -130,19 +133,28 @@
 
 .summary-table,
 .difference-table {
-  .ant-table {
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .ant-table-thead > tr > th {
-    border-bottom: 2px solid #e8e8e8;
-  }
-  .ant-table-tbody > tr {
-    transition: background 0.2s ease;
-    &:hover {
-      background: #f0f5ff;
-    }
-  }
+  /* The .ant-table class should be part of the external CSS */
+}
+
+.summary-table .ant-table,
+.difference-table .ant-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.summary-table .ant-table-thead > tr > th,
+.difference-table .ant-table-thead > tr > th {
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.summary-table .ant-table-tbody > tr,
+.difference-table .ant-table-tbody > tr {
+  transition: background 0.2s ease;
+}
+
+.summary-table .ant-table-tbody > tr:hover,
+.difference-table .ant-table-tbody > tr:hover {
+  background: #f0f5ff;
 }
 
 .positive {

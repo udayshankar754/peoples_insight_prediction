@@ -14,7 +14,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
   imports: [CommonModule, ReactiveFormsModule, NzSelectModule, NzTableModule , NzCardModule],
   host: { ngSkipHydration: 'true' },
   templateUrl: './round-wise-prediction.component.html',
-  styleUrl: './round-wise-prediction.component.scss',
+  styleUrl: './round-wise-prediction.component.css',
 })
 export class RoundWisePredictionComponent implements OnInit, OnDestroy {
   selectLoader: {

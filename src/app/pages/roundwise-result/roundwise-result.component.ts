@@ -20,7 +20,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   ],
   host: { ngSkipHydration: 'true' },
   templateUrl: './roundwise-result.component.html',
-  styleUrl: './roundwise-result.component.scss',
+  styleUrl: './roundwise-result.component.css',
 })
 export class RoundwiseResultComponent implements OnInit, OnDestroy {
   state_code: any;
